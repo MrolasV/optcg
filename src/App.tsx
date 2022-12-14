@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import Button from '@cloudscape-design/components/button';
 
-const App = (props: {buttonText: string, nextPage: string}): JSX.Element => {
+const AppTemp = (props: {buttonText: string, nextPage: string}): JSX.Element => {
   const { buttonText, nextPage } = props;
   const navigate = useNavigate();
 
@@ -16,4 +16,4 @@ const App = (props: {buttonText: string, nextPage: string}): JSX.Element => {
   );
 }
 
-export default App;
+export default AppTemp;

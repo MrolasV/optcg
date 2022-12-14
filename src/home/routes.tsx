@@ -1,18 +1,18 @@
 import * as React from 'react';
 import {
-  createHashRouter,
-  createRoutesFromElements,
   Navigate,
-  Route
+  Route,
+  Routes
 } from 'react-router-dom';
-import App from 'App';
+import { Page } from './page';
 
-export const router = createHashRouter(
-  createRoutesFromElements(
-    <Route path="*">
-      <Route path="home" element={<App nextPage='page2' buttonText='Home'/>} />
-      <Route path="page2" element={<App nextPage='home' buttonText='Page2'/>} />
-      {/* <Route path="*" element={<Navigate to="home" replace />} /> */}
-    </Route>
-  ), 
-);
+import CollectionView from 'modules/collection/collectionView';
+import BuilderView from 'modules/builder/builderView';
+
+export const routes = (): JSX.Element => {
+  return <Routes>
+    <Route path={Page.collection} element={<CollectionView/>} />
+    <Route path={Page.builder} element={<BuilderView/>} />
+    <Route path="*" element={<Navigate to={Page.collection} replace />} />
+  </Routes>
+}
