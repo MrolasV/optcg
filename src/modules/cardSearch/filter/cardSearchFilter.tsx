@@ -22,6 +22,40 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       <FormField label='Name'>
         <Input value='' />
       </FormField>
+      {/* Generic */}
+      {/* Name: input */}
+      {/* Card type: select */}
+      {/* Card colors: multiselect + and/or segments */}
+      {/* Types: multiselect + and/or segments */}
+
+      {/* Vanities - expandable */}
+      {/* Card rarity: select */}
+      {/* Art variant: select */}
+      
+      {/* Leader */}
+      {/* Power: input + =/>=/<= segments */}
+      {/* Attibute: select */}
+      {/* Effect text: input */}
+      {/* Life: input + =/>=/<= segments */}
+
+      {/* Character */}
+      {/* Cost: input + =/>=/<= segments */}
+      {/* Power: input + =/>=/<= segments */}
+      {/* Attibute: select */}
+      {/* Counter: input + =/>=/<= segments */}
+      {/* Effect text: input */}
+      {/* Trigger toggle: checkbox */}
+      {/* Trigger text: input */}
+
+      {/* Event */}
+      {/* Cost: input + =/>=/<= segments */}
+      {/* Effect text: input */}
+      {/* Trigger toggle: checkbox */}
+      {/* Trigger text: input */}
+      
+      {/* Stage */}
+      {/* Cost: input + =/>=/<= segments */}
+      {/* Effect text: input */}
     </SpaceBetween>
   }
 
