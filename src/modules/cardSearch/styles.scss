@@ -1,0 +1,42 @@
+.card-search-module {
+  padding-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+
+  .list-wrapper {
+    flex: auto;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+
+    .scroller-wrapper {
+      flex: auto;
+    }
+  }
+
+  .filter-content-wrapper {
+    width: 27rem;
+    position: relative;
+
+    .expand-toggle {
+      position: absolute;
+      top: 0;
+      left: 0.4rem;
+      transform: rotate(90deg);
+      transform-origin: 0 100%;
+      cursor: pointer;
+      display: flex;
+      gap: 0.5rem;
+      font-weight: bold;
+      user-select: none;
+    }
+  }
+
+  .filter-form-wrapper {
+    padding: 1rem 2rem 2rem 3.2rem;
+  }
+}
+
+.card-search-filter_expanded {
+  left: 0 !important;
+}

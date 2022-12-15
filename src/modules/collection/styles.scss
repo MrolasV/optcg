@@ -1,0 +1,19 @@
+.collection_content-header {
+  padding: 1rem 2rem 0 27rem;
+}
+
+.collection_content-wrapper {
+  display: flex;
+  gap: 1rem;
+  padding-left: 2rem;
+  margin-right: -1rem;
+  height: 100%;
+  left: 230px;
+  position: relative;
+  transition: left 0.5s;
+
+  .collection_content {
+    flex: auto;
+    padding-bottom: 2rem;
+  }
+}

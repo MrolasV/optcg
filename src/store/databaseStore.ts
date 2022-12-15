@@ -1,4 +1,4 @@
-import { CaseReducer, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { DbCard } from 'setdb/constants';
 import { MapReducerPayloads } from './util';
 

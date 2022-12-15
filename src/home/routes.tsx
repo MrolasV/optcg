@@ -10,9 +10,9 @@ import CollectionView from 'modules/collection/collectionView';
 import BuilderView from 'modules/builder/builderView';
 
 export const routes = (): JSX.Element => {
-  return <Routes>
+  return <div className='route-wrapper'><Routes>
     <Route path={Page.collection} element={<CollectionView/>} />
     <Route path={Page.builder} element={<BuilderView/>} />
     <Route path="*" element={<Navigate to={Page.collection} replace />} />
-  </Routes>
+  </Routes></div>
 }

@@ -1,16 +1,19 @@
 import * as React from 'react';
 
 import { routes } from './routes';
-import Navigation from './navigation';
 
 import AppLayout from '@cloudscape-design/components/app-layout';
 
+import './styles.scss';
+
 const App = (): JSX.Element => {
   return <AppLayout
+    className='optcg-app'
     contentType='default'
     toolsHide
+    navigationHide
+    disableContentPaddings
     content={routes()}
-    navigation={<Navigation/>}
   />
 }
 
