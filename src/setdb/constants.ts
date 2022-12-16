@@ -47,8 +47,11 @@ export enum CardRarity {
 
 export enum ArtVariant {
   PARALLEL,
-  PARALLEL_ALT,
+  SPECIAL_PARALLEL,
 }
+export const ArtVariantCodes: string[] = [
+  'P', 'SP'
+]
 
 export enum CardAttribute {
   STRIKE,
@@ -71,7 +74,9 @@ interface IDbCard {
   cardType: CardType;
   cardColors: CardColor[];
   rarity: CardRarity;
+  artVariant?: ArtVariant;
   artVariants?: ArtVariant[];
+  artist?: string;
   artists?: string[];
   blockIcon: number;
   types: string[];
@@ -81,7 +86,6 @@ export interface DbLeaderCard extends IDbCard {
   power: number;
   attribute: CardAttribute;
   effectText?: string;
-  effectTags?: string[]; // TODO
   life: number;
 }
 
@@ -91,23 +95,18 @@ export interface DbCharacterCard extends IDbCard {
   attribute: CardAttribute;
   counter: number;
   effectText?: string;
-  effectTags?: string[]; // TODO
   triggerText?: string;
-  triggerTags?: string[]; // TODO
 }
 
 export interface DbEventCard extends IDbCard {
   cost: number;
   effectText?: string;
-  effectTags?: string[]; // TODO
   triggerText?: string;
-  triggerTags?: string[]; // TODO
 }
 
 export interface DbStageCard extends IDbCard {
   cost: number;
   effectText?: string;
-  effectTags?: string[]; // TODO
 }
 
 export const ArtistList: string[] = [

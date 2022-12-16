@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
-import { CardFilter } from '../constants';
+import { CardFilter } from 'modules/common/constants';
 import ExpandToggle from './expandToggle';
 import FormFieldWithSegments from 'modules/common/formFieldWithSegments';
+import MultiSegmentedIconControl from 'modules/common/multiSegmentedIconControl';
 import { ArtistList, ArtVariant, CardAttribute, CardColor, CardRarity, CardType, SetId, SetNames, TypesList } from 'setdb/constants';
+import { capitalizeFirst } from 'modules/common/util';
 
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -14,14 +16,19 @@ import Select, { SelectProps } from '@cloudscape-design/components/select';
 import Checkbox from '@cloudscape-design/components/checkbox';
 import Multiselect, { MultiselectProps } from '@cloudscape-design/components/multiselect';
 import ExpandableSection from '@cloudscape-design/components/expandable-section';
-import Box from '@cloudscape-design/components/box';
+
+import '../styles.scss';
 
 interface CardSearchFilterProps {
+  expandToggleSide?: 'left' | 'right';
+  expandToggleText: string;
+  collectionContainsText?: string;
+  showCollectionContainsSelect?: boolean;
   onFilterChange?: (cardFilter: CardFilter) => void;
 }
 
 const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
-  const { onFilterChange } = props;
+  const { expandToggleSide, expandToggleText, collectionContainsText, showCollectionContainsSelect, onFilterChange } = props;
 
   const [ cardName, setCardName ] = useState<string>('');
   const [ cardSet, setCardSet ] = useState<string>('All');
@@ -43,6 +50,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const [ effectText, setEffectText ] = useState<string>('');
   const [ hasTrigger, setHasTrigger ] = useState<boolean>(false);
   const [ triggerText, setTriggerText ] = useState<string>('');
+  const [ inCollectionOptions, setInCollectionOptions ] = useState<string[]>(['in', 'out']);
 
   const [ rarity, setRarity ] = useState<string>('All');
   const [ artVariant, setArtVariant ] = useState<string>('All');
@@ -86,12 +94,17 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       cardFilter.attribute = Object(CardAttribute)[attribute] as CardAttribute;
     }
     if (!!effectText) {
-      cardFilter.effectTextTokens = effectText.split(' ');
+      cardFilter.effectText = effectText.toLowerCase();
     }
     if (hasTrigger) {
       cardFilter.hasTrigger = true;
       if (!!triggerText) {
-        cardFilter.triggerTextTokens = triggerText.split(' ');
+        cardFilter.triggerText = triggerText.toLowerCase();
+      }
+    }
+    if (showCollectionContainsSelect) {
+      if (inCollectionOptions.length === 1) {
+        cardFilter.inCollection = inCollectionOptions[0];
       }
     }
     if (rarity !== 'All') {
@@ -108,7 +121,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   }, [
     cardName, cardSet, cardType, cardColors, cardColorsUnionOption, typeTags, typeTagsUnionOption,
     life, lifeCompareMode, power, powerCompareMode, cost, costCompareMode, counter, counterCompareMode,
-    attribute, effectText, hasTrigger, triggerText, rarity, artVariant, artist
+    attribute, effectText, hasTrigger, triggerText, rarity, artVariant, artist, inCollectionOptions
   ]);
 
   const resetNonGenericFields = () => {
@@ -145,7 +158,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const renderAttributeField = (): JSX.Element => {
     const attributeOptions: SelectProps.Option[] = Object.keys(CardAttribute).filter(v => isNaN(Number(v))).map(cardAttribute => {
       return {
-        label: `${cardAttribute[0].toUpperCase()}${cardAttribute.slice(1).toLowerCase()}`,
+        label: capitalizeFirst(cardAttribute),
         value: cardAttribute,
       }
     });
@@ -215,7 +228,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
 
     const cardTypeOptions: SelectProps.Option[] = Object.keys(CardType).filter(v => isNaN(Number(v))).map(cardType => {
       return {
-        label: `${cardType[0].toUpperCase()}${cardType.slice(1).toLowerCase()}`,
+        label: capitalizeFirst(cardType),
         value: cardType,
       }
     });
@@ -224,7 +237,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
 
     const cardColorOptions: MultiselectProps.Option[] = Object.keys(CardColor).filter(v => isNaN(Number(v))).map(cardColor => {
       return {
-        label: `${cardColor[0].toUpperCase()}${cardColor.slice(1).toLowerCase()}`,
+        label: capitalizeFirst(cardColor),
         value: cardColor,
       }
     });
@@ -382,7 +395,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const renderVanitiesFields = (): JSX.Element => {
     const rarityOptions: SelectProps.Option[] = Object.keys(CardRarity).filter(v => isNaN(Number(v))).map(rarity => {
       return {
-        label: `${rarity[0].toUpperCase()}${rarity.slice(1).toLowerCase()}`,
+        label: capitalizeFirst(rarity),
         value: rarity,
       }
     });
@@ -391,7 +404,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
 
     const artVariantOptions: SelectProps.Option[] = Object.keys(ArtVariant).filter(v => isNaN(Number(v))).map(artVariant => {
       return {
-        label: `${artVariant[0].toUpperCase()}${artVariant.slice(1).toLowerCase()}`,
+        label: capitalizeFirst(artVariant).replace('_', ' '),
         value: artVariant,
       }
     });
@@ -437,6 +450,20 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     </ExpandableSection>
   }
 
+  const renderCollectionContainsField = (): JSX.Element => {
+    return <div className='filter-form-collection-contains-wrapper'>
+      <span>{collectionContainsText}: </span>
+      <MultiSegmentedIconControl
+        selectedIds={inCollectionOptions}
+        options={[
+          { iconName: 'check', id: 'in' },
+          { iconName: 'close', id: 'out' },
+        ]}
+        onChange={(selectedIds: string[]) => setInCollectionOptions(selectedIds)}
+      />
+    </div>
+  }
+
   // ===== FORM =====
 
   const renderForm = (): JSX.Element => {
@@ -446,13 +473,17 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       {cardType === 'CHARACTER' && renderCharacterFields()}
       {cardType === 'EVENT' && renderEventFields()}
       {cardType === 'STAGE' && renderStageFields()}
+      {showCollectionContainsSelect && renderCollectionContainsField()}
       {renderVanitiesFields()}
     </SpaceBetween>
   }
 
   return <Container disableContentPaddings>
     <div className='filter-content-wrapper'>
-      <ExpandToggle/>
+      <ExpandToggle
+        text={expandToggleText}
+        side={expandToggleSide || 'right'}
+      />
       <div className='filter-form-wrapper'>
         {renderForm()}
       </div>

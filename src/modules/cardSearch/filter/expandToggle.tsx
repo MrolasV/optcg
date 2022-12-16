@@ -6,11 +6,18 @@ import { useDispatch } from 'react-redux';
 import { IHomeState } from 'store';
 import { toggleFilterExpanded } from 'store/cardSearchStore';
 
-import Icon from '@cloudscape-design/components/icon';
+import Icon, { IconProps } from '@cloudscape-design/components/icon';
+
+interface ExpandToggleProps {
+  text: string;
+  side: 'left' | 'right';
+}
 
 const filterExpandedClassName = 'card-search-filter_expanded';
 
-const ExpandToggle = (): JSX.Element => {
+const ExpandToggle = (props: ExpandToggleProps): JSX.Element => {
+  const { text, side } = props;
+
   const dispatch = useDispatch();
 
   const filterExpanded = useSelector((state: IHomeState) => state.cardSearch.filterExpanded);
@@ -29,11 +36,30 @@ const ExpandToggle = (): JSX.Element => {
     dispatch(toggleFilterExpanded({}));
   }
 
-  return <div className='expand-toggle' onClick={onFilterExpandClick}>
-      <Icon name={filterExpanded ? 'angle-up' : 'angle-down'} />
+  const renderIcon = (): JSX.Element => {
+    const expandIcon: IconProps.Name = side === 'right' ? 'angle-down' : 'angle-up';
+    const collapseIcon: IconProps.Name = side === 'right' ? 'angle-up' : 'angle-down';
+    return <Icon name={filterExpanded ? collapseIcon : expandIcon} />
+  }
+
+  return <div 
+    className='expand-toggle' 
+    onClick={onFilterExpandClick}
+    style={side === 'right' ? {
+      left: '0.4rem',
+      transform: 'rotate(90deg)',
+      transformOrigin: '0 100%',
+    } : {
+      right: '0.4rem',
+      transform: 'rotate(270deg)',
+      transformOrigin: '100% 100%',
+    }}
+  >
+      {side === 'right' && renderIcon()}
       <div className='expand-toggle-text'>
-        CARD LIST FILTER
+        {text}
       </div>
+      {side === 'left' && renderIcon()}
     </div>
 }
 

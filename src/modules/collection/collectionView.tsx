@@ -4,6 +4,9 @@ import { useDatabase } from 'setdb/useDatabase';
 
 import CollectionManagerContainer from './collectionManagerContainer';
 import { Collection } from './constants';
+import CardSearchFilter from 'modules/cardSearch/filter/cardSearchFilter';
+import { CardFilter } from 'modules/common/constants';
+import CardSearchModule from 'modules/cardSearch/cardSearchModule';
 
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
@@ -11,13 +14,17 @@ import Container from '@cloudscape-design/components/container';
 import Box from '@cloudscape-design/components/box';
 import ExpandableSection from '@cloudscape-design/components/expandable-section';
 import SpaceBetween from '@cloudscape-design/components/space-between';
-import CardSearchModule from 'modules/cardSearch/cardSearchModule';
 
 import './styles.scss';
 
 const CollectionView = (): JSX.Element => {
   const { cardDatabase, cardDatabaseLoading } = useDatabase();
-  const [ workingCollecion, setWorkingCollection ] = useState<Collection>();
+
+  const [ workingCollecion, setWorkingCollection ] = useState<Collection>({
+    name: '',
+    cards: []
+  });
+  const [ collectionFilter, setCollectionFilter ] = useState<CardFilter>({});
 
   const cardDatabaseAsList = Object.values(cardDatabase).reduce((acc, cardDatabaseSet) => {
     return [...acc, ...(cardDatabaseSet.filter(dbCard => !!dbCard))];
@@ -48,15 +55,25 @@ const CollectionView = (): JSX.Element => {
     </Header>}
   >
     <div className='collection_content-wrapper card-search-filter_target'>
+      <div className='collection_filter-wrapper'>
+        <CardSearchFilter
+          expandToggleText='COLLECTION FILTER'
+          expandToggleSide='left'
+          onFilterChange={cardFilter => setCollectionFilter(cardFilter)}
+        />
+      </div>
       {renderContent()}
       <CardSearchModule
-        cardPool={cardDatabaseAsList.map(dbCard => {
-          return {
-            card: dbCard,
-            quantity: 1,
-          }
-        })}
-        displayQuantity={false}
+        cardPool={{
+          name: '_db',
+          cards: cardDatabaseAsList.map(dbCard => {
+            return {
+              card: dbCard,
+              quantity: 1,
+            }
+          })
+        }}
+        workingCardPool={workingCollecion}
       />
     </div>
   </ContentLayout>

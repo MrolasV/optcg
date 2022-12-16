@@ -1,3 +1,5 @@
+@use '@cloudscape-design/design-tokens/index' as awsui; 
+
 .form-field-with-segments {
   .form-field-with-segments_header {
     display: flex;
@@ -17,4 +19,10 @@
   .form-field-with-segments_children-wrapper {
     padding-top: 0.4rem;
   }
+}
+
+.multi-segmented-control_selected {
+  background: awsui.$color-background-control-checked !important;
+  border-color: awsui.$color-text-interactive-default !important;
+  color: awsui.$color-text-button-primary-default !important;
 }

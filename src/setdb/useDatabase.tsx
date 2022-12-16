@@ -24,10 +24,8 @@ export const useDatabase = () => {
 
   const fetchNextCardBatch = () => {
     setCardDatabaseLoading(true);
-    console.log('fetchNextCardBatch');
     cardFetcher.current.fetchCardBatch()
       .then((cardBatch) => {
-        console.log(cardBatch);
         setCardDatabaseLoading(false);
         dispatch(addToDatabase({
           cards: cardBatch,

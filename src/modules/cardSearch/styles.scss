@@ -9,34 +9,60 @@
     gap: 1rem;
     flex-direction: column;
 
-    .scroller-wrapper {
-      flex: auto;
-    }
-  }
-
-  .filter-content-wrapper {
-    width: 27rem;
-    position: relative;
-
-    .expand-toggle {
-      position: absolute;
-      top: 0;
-      left: 0.4rem;
-      transform: rotate(90deg);
-      transform-origin: 0 100%;
-      cursor: pointer;
+    .sorting-select {
       display: flex;
       gap: 0.5rem;
-      font-weight: bold;
-      user-select: none;
+      width: 25rem;
+
+      & > div:nth-child(2) {
+        width: 10.3rem;
+      }
+      & > div:nth-child(3) {
+        width: 9rem;
+      }
     }
-    
-    .filter-form-wrapper {
-      padding: 1rem 2rem 2rem 3.2rem;
+
+    .scroller-wrapper {
+      flex: auto;
+      margin: 0 -0.8rem;
+    }
+  }
+}
+
+.filter-content-wrapper {
+  width: 28rem;
+  position: relative;
+
+  .expand-toggle {
+    position: absolute;
+    top: 0;
+    cursor: pointer;
+    display: flex;
+    gap: 0.5rem;
+    font-weight: bold;
+    user-select: none;
+  }
+  
+  .filter-form-wrapper {
+    padding: 1rem 3.2rem 2rem 3.2rem;
+
+    .filter-form-collection-contains-wrapper {
+      display: flex;
+      justify-content: space-between;
+      height: 2.2rem;
+
+      & > span {
+        font-weight: 700;
+      }
+
+      & > div {
+        transform: scale(calc(22 / 30));
+        transform-origin: 100% 0;
+      }
     }
   }
 }
 
 .card-search-filter_expanded {
-  left: 0 !important;
+  left: -25rem !important;
 }
