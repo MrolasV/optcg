@@ -1,3 +1,9 @@
+// enum to string[]
+// Object.keys(ENUM).filter(v => isNaN(Number(v)))
+//
+// string to enum value
+// Object(ENUM)[str] as ENUM
+
 export enum SetId {
   P,
   ST01,
@@ -5,6 +11,14 @@ export enum SetId {
   ST03,
   ST04,
   OP01,
+}
+export const SetNames: {[key: string]: string} = {
+  'P': 'Promotional',
+  'ST01': 'Starter deck-Straw Hat Crew',
+  'ST02': 'Starter deck-Worst Generation',
+  'ST03': 'Starter deck-The Seven Warlords of the Sea',
+  'ST04': 'Starter deck-Animal Kingdom Pirates',
+  'OP01': 'Romance Dawn',
 }
 
 export enum CardType {
@@ -40,8 +54,14 @@ export enum CardAttribute {
   STRIKE,
   SLASH,
   RANGED,
+  WISDOM,
   SPECIAL,
 }
+
+//TODO
+export const TypesList: string[] = [
+  'Straw Hat Crew', 'Supernovas'
+]
 
 export type DbCard = DbLeaderCard | DbCharacterCard | DbEventCard | DbStageCard;
 interface IDbCard {
@@ -52,6 +72,7 @@ interface IDbCard {
   cardColors: CardColor[];
   rarity: CardRarity;
   artVariants?: ArtVariant[];
+  artists?: string[];
   blockIcon: number;
   types: string[];
 }
@@ -88,3 +109,7 @@ export interface DbStageCard extends IDbCard {
   effectText?: string;
   effectTags?: string[]; // TODO
 }
+
+export const ArtistList: string[] = [
+  'Manga', 'Anime', 
+]

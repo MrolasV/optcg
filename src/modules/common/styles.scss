@@ -1,0 +1,20 @@
+.form-field-with-segments {
+  .form-field-with-segments_header {
+    display: flex;
+    justify-content: space-between;
+    height: 2.2rem;
+
+    label {
+      font-weight: 700;
+    }
+    
+    & > div {
+      transform: scale(calc(22 / 30));
+      transform-origin: 100% 0;
+    }
+  }
+
+  .form-field-with-segments_children-wrapper {
+    padding-top: 0.4rem;
+  }
+}
