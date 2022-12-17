@@ -22,7 +22,7 @@ const CollectionView = (): JSX.Element => {
 
   const [ workingCollecion, setWorkingCollection ] = useState<Collection>({
     name: '',
-    cards: []
+    inventory: []
   });
   const [ collectionFilter, setCollectionFilter ] = useState<CardFilter>({});
 
@@ -66,7 +66,7 @@ const CollectionView = (): JSX.Element => {
       <CardSearchModule
         cardPool={{
           name: '_db',
-          cards: cardDatabaseAsList.map(dbCard => {
+          inventory: cardDatabaseAsList.map(dbCard => {
             return {
               card: dbCard,
               quantity: 1,

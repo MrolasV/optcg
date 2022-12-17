@@ -4,12 +4,19 @@ import { Provider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import App from 'home/main';
 import { store } from 'store';
+import { TooltipProvider } from 'react-tooltip';
+import Tooltip from 'home/tooltip';
 import '@cloudscape-design/global-styles/index.css';
+import 'react-tooltip/dist/react-tooltip.css';
+import 'modules/common/styles.scss';
 
 ReactDOM.render(
   <Provider store={store}>
     <HashRouter>
-      <App/>
+      <TooltipProvider>
+        <App/>
+        <Tooltip/>
+      </TooltipProvider>
     </HashRouter>
   </Provider>,
   document.getElementById('root')

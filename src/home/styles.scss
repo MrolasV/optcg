@@ -1,3 +1,5 @@
+@use '@cloudscape-design/design-tokens/index' as awsui; 
+
 html {
   font-size: 0.625rem;
 }
@@ -5,4 +7,39 @@ html {
 .route-wrapper {
   height: 100%;
   overflow-x: hidden;
+}
+
+.optcg-tooltip {
+  border: 2px solid awsui.$color-border-button-normal-disabled;
+  border-radius: 8px !important;
+  background-color: awsui.$color-background-dropdown-item-default !important;
+  font-size: 1.4rem !important;
+  line-height: 2rem;
+  font-family: awsui.$font-family-base;
+  opacity: 1 !important;
+  color: awsui.$color-text-body-default !important;
+}
+
+.optcg-tooltip_arrow {
+  background-color: awsui.$color-background-dropdown-item-default !important;
+}
+.optcg-tooltip_arrow-top {
+  border-right: 2px solid awsui.$color-border-button-normal-disabled;
+  border-bottom: 2px solid awsui.$color-border-button-normal-disabled;
+  transform: translateY(3px) rotate(45deg) !important;
+}
+.optcg-tooltip_arrow-right {
+  border-bottom: 2px solid awsui.$color-border-button-normal-disabled;
+  border-left: 2px solid awsui.$color-border-button-normal-disabled;
+  transform: translateX(-3px) rotate(45deg) !important;
+}
+.optcg-tooltip_arrow-bottom {
+  border-left: 2px solid awsui.$color-border-button-normal-disabled;
+  border-top: 2px solid awsui.$color-border-button-normal-disabled;
+  transform: translateY(-3px) rotate(45deg) !important;
+}
+.optcg-tooltip_arrow-left {
+  border-top: 2px solid awsui.$color-border-button-normal-disabled;
+  border-right: 2px solid awsui.$color-border-button-normal-disabled;
+  transform: translateX(3px) rotate(45deg) !important;
 }

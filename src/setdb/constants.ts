@@ -35,6 +35,9 @@ export enum CardColor {
   PURPLE,
   BLACK,
 }
+export const CardColorHexCodes: string[] = [
+  'd6141d', '00946b', '0085c2', '94398b', '000000',
+];
 
 export enum CardRarity {
   COMMON,

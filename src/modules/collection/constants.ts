@@ -2,8 +2,11 @@ import { DbCard } from "setdb/constants";
 
 export interface Collection {
   name: string;
-  cards: {
-    card: DbCard,
-    quantity: number,
-  }[]
+  inventory: CollectionInventory;
+}
+
+export type CollectionInventory = CollectionInventoryItem[];
+export interface CollectionInventoryItem {
+  card: DbCard;
+  quantity: number;
 }
