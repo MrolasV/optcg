@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 
 import { Tooltip as ReactTooltip } from 'react-tooltip';
-import { useMutationObserver } from 'modules/common/useMutationObserver';
+import useMutationObserver from 'modules/common/useMutationObserver';
 
 import './styles.scss';
 

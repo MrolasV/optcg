@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { TooltipWrapper, PlacesType } from 'react-tooltip';
@@ -7,12 +8,16 @@ import { capitalizeFirst } from './util';
 
 interface CardTooltipProps {
   place?: PlacesType;
-  card: DbCard;
+  card?: DbCard;
   children?: React.ReactNode;
 }
 
 const CardTooltip = (props: CardTooltipProps): JSX.Element => {
   const { place, card, children } = props;
+
+  if (!card) {
+    return <>{children}</>
+  }
 
   const leaderCard = card as DbLeaderCard;
   const characterCard = card as DbCharacterCard;

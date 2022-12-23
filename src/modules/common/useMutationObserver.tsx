@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect } from 'react';
 
-export const useMutationObserver = (
+const useMutationObserver = (
   ref: any,
   callback: any,
   options = {
@@ -19,3 +19,5 @@ export const useMutationObserver = (
     }
   }, [callback]);
 }
+
+export default useMutationObserver;

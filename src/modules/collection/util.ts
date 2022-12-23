@@ -1,22 +1,27 @@
 import { CardFilter, CardSort, CardSortDirection, CardSortOrderBy } from "modules/common/constants";
-import { CardType, DbCard, DbCharacterCard, DbLeaderCard } from "setdb/constants";
-import { CollectionInventory, CollectionInventoryItem } from "./constants";
+import { getLocalStorageItem } from "modules/common/util";
+import { ArtVariant, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, SetId } from "setdb/constants";
+import { Collection, CollectionInventory, CollectionInventoryItem } from "./constants";
 
-export const cardToCardId = (card: DbCard): string => {
+export const cardToCardId = (card: DbCard | CollectionCard): string => {
   return `${card.setId}-${card.setNumber}-${card.hasOwnProperty('artVariant') ? card.artVariant : ''}`;
 }
 
 export const filterCollectionInventory = (
   inventory: CollectionInventory, 
   comparativeQuantities: {[cardId: string]: number}, 
-  cardFilter?: CardFilter
+  getDbCard: (collectionCard: CollectionCard) => DbCard | undefined,
+  cardFilter?: CardFilter,
 ): CollectionInventory => {
   if (!cardFilter) {
     return inventory;
   }
 
   return inventory.filter(listItem => {
-    const card = listItem.card;
+    const card = getDbCard(listItem.card);
+    if (!card) {
+      return false;
+    }
     const leaderCard = card as DbLeaderCard;
     const characterCard = card as DbCharacterCard; // treating event and stage cards as character in filter because no unique fields
     const cardId = cardToCardId(card);
@@ -164,7 +169,11 @@ export const filterCollectionInventory = (
   });
 }
 
-export const sortCollectionInventory = (inventory: CollectionInventory, cardSort?: CardSort) => {
+export const sortCollectionInventory = (
+  inventory: CollectionInventory, 
+  getDbCard: (collectionCard: CollectionCard) => DbCard | undefined,
+  cardSort?: CardSort
+) => {
   if (!cardSort) {
     return;
   }
@@ -218,7 +227,7 @@ export const sortCollectionInventory = (inventory: CollectionInventory, cardSort
     const _a = cardSort.direction === CardSortDirection.DESC ? a : b;
     const _b = cardSort.direction === CardSortDirection.DESC ? b : a;
     if (_a.setId === _b.setId) {
-      return _a.setNumber - _b.setNumber;
+      return a.setNumber - b.setNumber;
     } else {
       return _b.setId - _a.setId;
     }
@@ -238,8 +247,16 @@ export const sortCollectionInventory = (inventory: CollectionInventory, cardSort
   }
 
   inventory.sort((a: CollectionInventoryItem, b: CollectionInventoryItem) => {
-    const _a = a.card;
-    const _b = b.card;
+    const _a = getDbCard(a.card);
+    const _b = getDbCard(b.card);
+
+    if (!_a && !_b) {
+      return 0;
+    } else if (!_a) {
+      return 1;
+    } else if (!_b) {
+      return -1;
+    }
 
     const typeSortValue = typeSortFunc(_a, _b);
     const costSortValue = costSortFunc(_a, _b);
@@ -269,4 +286,124 @@ export const sortCollectionInventory = (inventory: CollectionInventory, cardSort
 
     return 0;
   });
+}
+
+export const addCardToCollection = (card: CollectionCard, collection: Collection): Collection => {
+  const cardId = cardToCardId(card);
+  const matchIndex = collection.inventory.findIndex(inventoryItem => cardToCardId(inventoryItem.card) === cardId);
+  if (matchIndex !== -1) {
+    collection.inventory[matchIndex].quantity++;
+  } else {
+    collection.inventory.push({
+      card, quantity: 1
+    })
+  }
+  return collection;
+}
+
+export const removeCardFromCollection = (card: CollectionCard, collection: Collection): Collection => {
+  const cardId = cardToCardId(card);
+  const matchIndex = collection.inventory.findIndex(inventoryItem => cardToCardId(inventoryItem.card) === cardId);
+  if (matchIndex !== -1) {
+    collection.inventory[matchIndex].quantity--;
+    if (!collection.inventory[matchIndex].quantity) {
+      collection.inventory.splice(matchIndex, 1);
+    }
+  }
+  return collection;
+}
+
+const inventoryItemToLocalItem = (item: CollectionInventoryItem): Uint8Array => {
+  const card = item.card;
+  const set: number = card.setId & 0x3ff;
+  const setNumber: number = card.setNumber & 0x3ff;
+  const artVariant: number = (card.hasOwnProperty('artVariant') ? (card.artVariant || 0) + 1 : 0) & 0x7;
+  const blockId: number = card.blockIcon & 0x7;
+  const quantity: number = item.quantity & 0x3f;
+
+  const b1: number = set & 0xff;
+  const b2: number = ((set >> 8) & 0x3) | ((setNumber & 0x3f) << 2);
+  const b3: number = ((setNumber >> 6) & 0xf) | (artVariant << 4) | ((blockId & 0x1) << 7);
+  const b4: number = ((blockId >> 1) & 0x3) | (quantity << 2);
+  
+  const arr = new Uint8Array(4);
+  arr[3] = b1;
+  arr[2] = b2;
+  arr[1] = b3;
+  arr[0] = b4;
+  return arr;
+}
+
+export const collectionToLocalCollection = (collection: Collection): string => {
+  const encodedArr = new Uint8Array(collection.inventory.length * 4);
+  collection.inventory.forEach((inventoryItem, index) => {
+    const localItem = inventoryItemToLocalItem(inventoryItem);
+    localItem.forEach((localItemByte, localItemIndex) => {
+      const encodedIndex = localItemIndex + index * 4;
+      encodedArr[encodedIndex] = localItemByte;
+    });
+  });
+  let encodedString = '';
+  encodedArr.filter(v => { encodedString += String.fromCharCode(v); return false; })
+  return btoa(encodedString);
+}
+
+const localItemToInventoryItem = (localItem: Uint8Array): CollectionInventoryItem | undefined => {
+  const b1 = localItem[3];
+  const b2 = localItem[2];
+  const b3 = localItem[1];
+  const b4 = localItem[0];
+
+  const set: SetId = ((b2 & 0x3) | b1) as SetId;
+  const setNumber: number = (b2 >> 2) | ((b3 & 0xf) << 6);
+  const artVariantNumber: number = ((b3 >> 4) & 0x7) - 1;
+  const blockId: number = (b3 >> 7) | ((b4 & 0x3) << 1);
+  const quantity: number = (b4 >> 2);
+
+  const card: CollectionCard = {
+    setId: set,
+    setNumber: setNumber,
+    blockIcon: blockId,
+  }
+  if (artVariantNumber >= 0) {
+    card.artVariant = artVariantNumber;
+  }
+
+  return {
+    card, quantity
+  };
+}
+
+export const localCollectionToCollection = (name: string, localCollection: string): Collection => {
+  const encodedArr: Uint8Array = new Uint8Array(atob(localCollection).split('').map(c => c.charCodeAt(0)));
+  if (encodedArr.length % 4 !== 0) {
+    throw `Saved collection "${name}" is corrupted. Please delete`;
+  }
+  const collection: Collection = {
+    name, inventory: []
+  }
+  for (let i = 0; i < encodedArr.length; i += 4) {
+    const localItem: Uint8Array = new Uint8Array([encodedArr[i], encodedArr[i + 1], encodedArr[i + 2], encodedArr[i + 3]]);
+    const inventoryItem = localItemToInventoryItem(localItem);
+    if (!!inventoryItem) {
+      collection.inventory.push(inventoryItem);
+    }
+  }
+  return collection;
+}
+
+export const localListPush = (listKey: string, item: string) => {
+  const localList: string[] = getLocalStorageItem<string[]>(listKey) || [];
+  if (!localList.includes(item)) {
+    localList.push(item);
+    localStorage.setItem(listKey, JSON.stringify(localList));
+  }
+}
+
+export const localListRemove = (listKey: string, item: string) => {
+  const localList: string[] = getLocalStorageItem<string[]>(listKey) || [];
+  if (localList.includes(item)) {
+    const filtered: string[] = localList.filter(listItem => listItem !== item);
+    localStorage.setItem(listKey, JSON.stringify(filtered));
+  }
 }

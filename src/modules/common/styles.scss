@@ -85,51 +85,84 @@
   }
 }
 
-// .list-item_content {
-//   padding: 0.5rem 1rem;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: space-between;
-//   height: calc(100% - 1rem);
+.card-summary {
+  height: 90px;
 
-//   & > div {
-//     display: flex;
-//     justify-content: space-between;
+  .card-summary_content {
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100% - 1rem);
 
-//     & > div:nth-child(1) {
-//       flex-grow: 1;
-//       overflow: hidden;
-//     }
+    & > div {
+      display: flex;
+      justify-content: space-between;
 
-//     & > div:nth-child(2) {
-//       flex-grow: 0;
-//       flex-shrink: 0;
-//     }
+      & > div:nth-child(1) {
+        flex-grow: 1;
+        overflow: hidden;
+      }
 
-//     .list-item_card-name {
-//       text-overflow: ellipsis;
-//       white-space: nowrap;
-//       line-height: 2rem;
-//       font-size: 1.6rem;
-//     }
+      & > div:nth-child(2) {
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
 
-//     .list-item_detail {
-//       font-size: 1.2rem;
-//       line-height: 1.6rem;
-//     }
-//   }
+      .card-summary_card-name {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        line-height: 2rem;
+        font-size: 1.6rem;
+        overflow: hidden;
+      }
 
-//   .list-item_card-type-tag {
-//     border: 2px solid awsui.$color-text-interactive-default;
-//     padding: 0 1rem;
-//     border-radius: 2rem;
-//     font-weight: 700;
-//     text-shadow: 0 0 2px black;
-//     height: 2.2rem;
-//   }
+      .card-summary_detail {
+        font-size: 1.2rem;
+        line-height: 1.6rem;
+      }
+    }
 
-//   .list-item_bottom-row {
-//     font-size: 1.2rem;
-//     line-height: 1.6rem;
-//   }
-// }
+    .card-summary_card-type-tag {
+      border: 2px solid awsui.$color-text-interactive-default;
+      padding: 0 1rem;
+      border-radius: 2rem;
+      font-weight: 700;
+      text-shadow: 0 0 2px black;
+      height: 2.2rem;
+    }
+
+    .card-summary_bottom-row {
+      font-size: 1.2rem;
+      line-height: 1.6rem;
+
+      & > div:nth-child(1) {
+        display: flex;
+        gap: 0.5rem;
+        height: 1.6rem;
+
+        & > div:nth-child(1) {
+          flex-grow: 0;
+        }
+
+        & > div:nth-child(2) {
+          transform: scale(0.5);
+          transform-origin: 0 0;
+
+          & button {
+            font-size: 2.8rem !important;
+            padding: 0 1rem !important;
+          }
+
+          & button:nth-child(1) {
+            padding-bottom: 0.2rem !important;
+          }
+
+          & button:nth-child(2) {
+            padding-bottom: 0.6rem !important;
+          }
+        }
+      }
+    }
+  }
+}

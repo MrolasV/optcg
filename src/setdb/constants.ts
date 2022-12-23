@@ -69,6 +69,13 @@ export const TypesList: string[] = [
   'Straw Hat Crew', 'Supernovas'
 ]
 
+export interface CollectionCard {
+  setId: SetId;
+  setNumber: number;
+  artVariant?: ArtVariant;
+  blockIcon: number;
+}
+
 export type DbCard = DbLeaderCard | DbCharacterCard | DbEventCard | DbStageCard;
 interface IDbCard {
   setId: SetId;

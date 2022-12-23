@@ -1,4 +1,4 @@
-import { DbCard } from "setdb/constants";
+import { CollectionCard } from "setdb/constants";
 
 export interface Collection {
   name: string;
@@ -7,6 +7,6 @@ export interface Collection {
 
 export type CollectionInventory = CollectionInventoryItem[];
 export interface CollectionInventoryItem {
-  card: DbCard;
+  card: CollectionCard;
   quantity: number;
 }

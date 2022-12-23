@@ -27,60 +27,6 @@
     .scroller-wrapper {
       flex: auto;
       margin: 0 -0.8rem;
-
-      .list-item {
-        height: 90px;
-
-        .list-item_content {
-          padding: 0.5rem 1rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          height: calc(100% - 1rem);
-
-          & > div {
-            display: flex;
-            justify-content: space-between;
-
-            & > div:nth-child(1) {
-              flex-grow: 1;
-              overflow: hidden;
-            }
-
-            & > div:nth-child(2) {
-              flex-grow: 0;
-              flex-shrink: 0;
-            }
-
-            .list-item_card-name {
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              line-height: 2rem;
-              font-size: 1.6rem;
-              overflow: hidden;
-            }
-
-            .list-item_detail {
-              font-size: 1.2rem;
-              line-height: 1.6rem;
-            }
-          }
-
-          .list-item_card-type-tag {
-            border: 2px solid awsui.$color-text-interactive-default;
-            padding: 0 1rem;
-            border-radius: 2rem;
-            font-weight: 700;
-            text-shadow: 0 0 2px black;
-            height: 2.2rem;
-          }
-
-          .list-item_bottom-row {
-            font-size: 1.2rem;
-            line-height: 1.6rem;
-          }
-        }
-      }
     }
   }
 }

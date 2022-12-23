@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { CardFilter, CardSort } from 'modules/common/constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -7,8 +7,9 @@ import { FixedSizeList as List } from 'react-window';
 import { Collection, CollectionInventory } from 'modules/collection/constants';
 import { DbCard } from 'setdb/constants';
 import { cardToCardId, filterCollectionInventory, sortCollectionInventory } from 'modules/collection/util';
-
-import CardSearchListItem from './cardSearchListItem';
+import CardSummaryContainer from '../../common/cardSummaryContainer';
+import { useDatabase } from 'setdb/useDatabase';
+import useForceUpdate from 'modules/common/useForceUpdate';
 
 interface CardSearchListProps {
   cardPool: Collection; // list these
@@ -19,9 +20,9 @@ interface CardSearchListProps {
 }
 
 const CardSearchList = (props: CardSearchListProps): JSX.Element => {
+  const { cardDatabase, getDbCard } = useDatabase();
+  
   const { cardPool, workingCardPool, cardSort, cardFilter, quantityMode } = props;
-
-  const [ tooltipAnchor, setTooltipAnchor ] = useState<string>('scroller-wrapper');
 
   const workingCardPoolQuantities: {[key: string]: number} = {};
   workingCardPool.inventory.forEach(cardData => {
@@ -33,7 +34,11 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
 
   const cardListItems: CollectionInventory = cardPool.inventory.reduce((acc, cardData) => {
     const baseCardId = `${cardData.card.setId}-${cardData.card.setNumber}-`;
-    const baseCard = {...cardData.card};
+    const baseDbCard = getDbCard(cardData.card);
+    const baseCard = baseDbCard ? {...baseDbCard} : undefined;
+    if (!baseCard) {
+      return acc;
+    }
     if (baseCard.hasOwnProperty('artVariants')) {
       delete baseCard.artVariants;
     }
@@ -41,7 +46,7 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
       delete baseCard.artists;
     }
 
-    let artist = cardData.card.artists && cardData.card.artists.length > 0 ? cardData.card.artists[0] : 'Manga';
+    let artist = baseDbCard!!.artists && baseDbCard!!.artists.length > 0 ? baseDbCard!!.artists[0] : 'Manga';
     let workingQuantity = workingCardPoolQuantities[baseCardId] || 0;
     let quantity = workingQuantity;
     if (quantityMode === 'subtract') { // deck view. will cardPool will be a user collection so no need to worry about art variants existing in pool
@@ -53,9 +58,9 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
     }
     acc.push({ card, quantity });
 
-    cardData.card.artVariants?.forEach((artVariant, index) => {
+    baseDbCard!!.artVariants?.forEach((artVariant, index) => {
       const cardId = `${baseCardId}${artVariant}`;
-      artist = cardData.card.artists && cardData.card.artists.length > index + 1 ? cardData.card.artists[index + 1] : 'Manga';
+      artist = baseDbCard!!.artists && baseDbCard!!.artists.length > index + 1 ? baseDbCard!!.artists[index + 1] : 'Manga';
       workingQuantity = workingCardPoolQuantities[cardId] || 0;
       quantity = workingQuantity;
       if (quantityMode === 'subtract') {
@@ -74,8 +79,8 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
 
   //#region Filter and sort
 
-  const filteredListItems: CollectionInventory = filterCollectionInventory(cardListItems, workingCardPoolQuantities, cardFilter);
-  sortCollectionInventory(filteredListItems, cardSort);
+  const filteredListItems: CollectionInventory = filterCollectionInventory(cardListItems, workingCardPoolQuantities, getDbCard, cardFilter);
+  sortCollectionInventory(filteredListItems, getDbCard, cardSort);
 
   //#endregion
 
@@ -86,13 +91,13 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
       paddingLeft: '8px',
       width: 'calc(100% - 16px)',
     }}>
-      <CardSearchListItem inventoryItem={filteredListItems[index]} />
+      <CardSummaryContainer inventoryItem={filteredListItems[index]} draggable={true} showQuantityControls={false} />
     </div>
   )
 
   return <div className='scroller-wrapper' id='scroller-wrapper'>
     <AutoSizer disableWidth>
-      {({height, width}) =>
+      {({ height, width }) =>
         <List
           height={height}
           itemCount={filteredListItems.length}

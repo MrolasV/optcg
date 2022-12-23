@@ -1,51 +1,87 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDatabase } from 'setdb/useDatabase';
 
 import CollectionManagerContainer from './collectionManagerContainer';
 import { Collection } from './constants';
 import CardSearchFilter from 'modules/cardSearch/filter/cardSearchFilter';
-import { CardFilter } from 'modules/common/constants';
+import { CardFilter, CardSort, CardSortDirection, CardSortOrderBy, lsWorkingCollectionKey, lsWorkingCollectionNameKey } from 'modules/common/constants';
 import CardSearchModule from 'modules/cardSearch/cardSearchModule';
+import CollectionContainer from './collectionContainer';
+import { getLocalStorageItem } from 'modules/common/util';
+import { addCardToCollection, collectionToLocalCollection, localCollectionToCollection, removeCardFromCollection } from './util';
+import { CollectionCard } from 'setdb/constants';
 
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
-import Container from '@cloudscape-design/components/container';
-import Box from '@cloudscape-design/components/box';
-import ExpandableSection from '@cloudscape-design/components/expandable-section';
-import SpaceBetween from '@cloudscape-design/components/space-between';
 
 import './styles.scss';
 
 const CollectionView = (): JSX.Element => {
   const { cardDatabase, cardDatabaseLoading } = useDatabase();
-
-  const [ workingCollecion, setWorkingCollection ] = useState<Collection>({
-    name: '',
-    inventory: []
-  });
-  const [ collectionFilter, setCollectionFilter ] = useState<CardFilter>({});
-
   const cardDatabaseAsList = Object.values(cardDatabase).reduce((acc, cardDatabaseSet) => {
     return [...acc, ...(cardDatabaseSet.filter(dbCard => !!dbCard))];
   }, []);
 
+  const [ workingCollection, setWorkingCollection ] = useState<Collection>(() => {
+    const localWorkingCollection: string = getLocalStorageItem<string>(lsWorkingCollectionKey) || '';
+    const localWorkingCollectionName: string = getLocalStorageItem<string>(lsWorkingCollectionNameKey) || '';
+    try {
+      return localCollectionToCollection(localWorkingCollectionName, localWorkingCollection);
+    } catch (e) {
+      console.log('ccc');
+      console.log(e);
+      return {
+        name: localWorkingCollectionName,
+        inventory: []
+      }
+    }
+  });
+  const [ collectionFilter, setCollectionFilter ] = useState<CardFilter>({});
+  const [ collectionSort, setCollectionSort ] = useState<CardSort>({ orderBy: CardSortOrderBy.SET, direction: CardSortDirection.ASC });
+
+  useEffect(() => {
+    localStorage.setItem(lsWorkingCollectionNameKey, workingCollection.name);
+    localStorage.setItem(lsWorkingCollectionKey, collectionToLocalCollection(workingCollection));
+  }, [ workingCollection ])
+
+  const removeCardFromWorkingCollection = (collectionCard: CollectionCard) => {
+    const collectionItemCount = workingCollection.inventory.length;
+    const updatedCollection = removeCardFromCollection(collectionCard, {...workingCollection});
+    if (updatedCollection.inventory.length < collectionItemCount) {
+      const tooltip = document.querySelector('.optcg-tooltip');
+      if (!!tooltip) {
+        let showClass = '';
+        tooltip.classList.forEach(className => {
+          if (className.includes('module_show')) {
+            showClass = className;
+          }
+        });
+        if (!!showClass) {
+          tooltip.classList.remove(showClass);
+        }
+      }
+    }
+    setWorkingCollection(updatedCollection)
+  }
+
   const renderContent = (): JSX.Element => {
-    return <SpaceBetween size='m' className='collection_content'>
-      <CollectionManagerContainer/>
-      <ExpandableSection
-        variant='container'
-        header={<Header variant='h2'>
-          Card database (Raw)
-        </Header>}
-      >
-        <Box variant='code'>
-          <pre style={{whiteSpace: 'pre-wrap'}}>
-            {JSON.stringify(cardDatabase, null, 2)}
-          </pre>
-        </Box>
-      </ExpandableSection>
-    </SpaceBetween>
+    return <div className='collection_content'>
+      <CollectionManagerContainer
+        workingCollection={workingCollection}
+        collectionSort={collectionSort}
+        setWorkingCollectionName={(name: string) => setWorkingCollection({ name: name, inventory: workingCollection.inventory })}
+        onCollectionLoad={(collection: Collection) => setWorkingCollection(collection)}
+        onSortChange={updatedSort => setCollectionSort(updatedSort)}
+      />
+      <CollectionContainer
+        workingCollection={workingCollection}
+        collectionFilter={collectionFilter}
+        collectionSort={collectionSort}
+        addCardToCollection={card => setWorkingCollection(addCardToCollection(card, {...workingCollection}))}
+        removeCardFromCollection={removeCardFromWorkingCollection}
+      />
+    </div>
   }
 
   return <ContentLayout
@@ -73,7 +109,7 @@ const CollectionView = (): JSX.Element => {
             }
           })
         }}
-        workingCardPool={workingCollecion}
+        workingCardPool={workingCollection}
       />
     </div>
   </ContentLayout>
