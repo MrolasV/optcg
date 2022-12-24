@@ -16,3 +16,24 @@ export const getLocalStorageItem = <T,>(key: string): T | undefined => {
     return localItem as T;
   }
 }
+
+const checkDebugFlag = (flag: string) => {
+  //@ts-ignore
+  return !!window.optcgDebug && (typeof window.optcgDebug) === 'object' && !!window.optcgDebug[flag];
+}
+
+export const debugTiming = (message: string, timings: number[]) => {//@ts-ignore
+  if (!checkDebugFlag('timing')) {
+    return;
+  }
+
+  if (timings.length < 2) {
+    return;
+  }
+  const overallTime = timings[timings.length - 1] - timings[0];
+  const chunks: string[] = [];
+  for (let i = 1; i < timings.length; i++) {
+    chunks.push((timings[i] - timings[i - 1]).toFixed(1));
+  }
+  console.log(`${message}: ${overallTime.toFixed(1)}ms (Chunks ${chunks.join(' ')})`);
+}

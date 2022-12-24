@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { memo } from 'react';
 
 import { CardFilter, CardSort } from 'modules/common/constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeList as List } from 'react-window';
+import { areEqual, FixedSizeList as List } from 'react-window';
 import { Collection, CollectionInventory } from 'modules/collection/constants';
-import { CollectionCard, DbCard } from 'setdb/constants';
+import { CollectionCard } from 'setdb/constants';
 import { cardToCardId, dbCardToCollectionCard, filterCollectionInventory, sortCollectionInventory } from 'modules/collection/util';
 import CardSummaryContainer from '../../common/cardSummaryContainer';
 import { useDatabase } from 'setdb/useDatabase';
-import useForceUpdate from 'modules/common/useForceUpdate';
+import memoize from "memoize-one";
 
 interface CardSearchListProps {
   cardPool: Collection; // list these
@@ -19,8 +19,23 @@ interface CardSearchListProps {
   quantityMode: 'subtract' | 'show';
 }
 
+const createMemoizedItems = memoize((filteredList) => ({
+  filteredList
+}));
+
+//@ts-ignore
+const CardSearchListItem = memo(({ index, style, data }) => (
+  <div style={{
+    ...style,
+    paddingLeft: '8px',
+    width: 'calc(100% - 16px)',
+  }}>
+    <CardSummaryContainer card={data.filteredList[index].card} quantity={data.filteredList[index].quantity} draggable={true} showQuantityControls={false} />
+  </div>
+), areEqual)
+
 const CardSearchList = (props: CardSearchListProps): JSX.Element => {
-  const { cardDatabase, getDbCard } = useDatabase();
+  const { getDbCard } = useDatabase();
   
   const { cardPool, workingCardPool, cardSort, cardFilter, quantityMode } = props;
 
@@ -73,16 +88,7 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
 
   //#endregion
 
-  //@ts-ignore
-  const renderListItem = ({ index, style }) => (
-    <div style={{
-      ...style,
-      paddingLeft: '8px',
-      width: 'calc(100% - 16px)',
-    }}>
-      <CardSummaryContainer inventoryItem={filteredListItems[index]} draggable={true} showQuantityControls={false} />
-    </div>
-  )
+  const memoizedList = createMemoizedItems(filteredListItems);
 
   return <div className='scroller-wrapper' id='scroller-wrapper'>
     <AutoSizer disableWidth>
@@ -92,8 +98,9 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
           itemCount={filteredListItems.length}
           itemSize={100}
           width={width}
+          itemData={memoizedList}
         >
-          {renderListItem}
+          {CardSearchListItem}
         </List>
       }
     </AutoSizer>

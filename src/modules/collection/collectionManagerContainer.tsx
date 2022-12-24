@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect, useRef } from 'react';
 
 import { Collection } from './constants';
-import { capitalizeFirst, getLocalStorageItem } from 'modules/common/util';
+import { capitalizeFirst, debugTiming, getLocalStorageItem } from 'modules/common/util';
 import { CardSort, CardSortDirection, CardSortOrderBy, lsCollectionKey, lsCollectionListKey, lsWorkingCollectionNameKey } from 'modules/common/constants';
 import { TooltipWrapper } from 'react-tooltip';
 import { collectionToLocalCollection, localCollectionToCollection, localListPush, localListRemove } from './util';
@@ -110,9 +110,11 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
   }
 
   const onImport = (event: any) => {
+    const p1 = performance.now();
     const file = event.target.files[0];
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
+      const p2 = performance.now();
       const fileText = fileReader.result as string;
       if (!fileText || fileText[0] !== 'c') {
         console.error(`File "${file.name}" is corrupted`);
@@ -122,6 +124,8 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
       const collectionName = file.name.substring(0, file.name.length - 5);
       const collection = localCollectionToCollection(collectionName, collectionString);
       onCollectionLoad(collection);
+      const p3 = performance.now();
+      debugTiming('Import time', [p1, p2, p3]);
     }
     fileReader.readAsText(file);
   }

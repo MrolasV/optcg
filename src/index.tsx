@@ -8,6 +8,7 @@ import { TooltipProvider } from 'react-tooltip';
 import Tooltip from 'home/tooltip';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { SingletonHooksContainer } from 'react-singleton-hook';
 import '@cloudscape-design/global-styles/index.css';
 import 'react-tooltip/dist/react-tooltip.css';
 import 'modules/common/styles.scss';
@@ -17,6 +18,7 @@ ReactDOM.render(
     <HashRouter>
       <DndProvider backend={HTML5Backend}>
         <TooltipProvider>
+          <SingletonHooksContainer/>
           <App/>
           <Tooltip/>
         </TooltipProvider>

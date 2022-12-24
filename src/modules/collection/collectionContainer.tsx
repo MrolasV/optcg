@@ -1,18 +1,19 @@
 import * as React from 'react';
-import { useRef, useEffect } from 'react';
+import { useRef, memo } from 'react';
 import { useDrop } from 'react-dnd';
 
 import { Collection, CollectionInventory, CollectionInventoryItem } from './constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { FixedSizeGrid as Grid } from 'react-window';
+import { FixedSizeGrid as Grid, areEqual } from 'react-window';
 import CardSummaryContainer from 'modules/common/cardSummaryContainer';
-import { cardList } from 'setdb/cards/op01';
 import { CollectionCard, DbCard } from 'setdb/constants';
 import { filterCollectionInventory, sortCollectionInventory } from './util';
 import { CardFilter, CardSort } from 'modules/common/constants';
+import memoize from "memoize-one";
 
 import Container from '@cloudscape-design/components/container';
 import { useDatabase } from 'setdb/useDatabase';
+import { debugTiming } from 'modules/common/util';
 
 interface CollectionContainerProps {
   workingCollection: Collection;
@@ -22,12 +23,43 @@ interface CollectionContainerProps {
   removeCardFromCollection: (card: CollectionCard) => void;
 }
 
+const createMemoizedItems = memoize((columnCount, filteredCollection, addCardToCollection, removeCardFromCollection) => ({
+  columnCount, filteredCollection, addCardToCollection, removeCardFromCollection
+}));
+
+//@ts-ignore
+const CollectionContainerGridItem = memo(({ columnIndex, rowIndex, style, data }) => {
+  const index = data.columnCount * rowIndex + columnIndex;
+  const item = data.filteredCollection[index] as CollectionInventoryItem;
+  if (!item) {
+    return <div/>
+  }
+  return <div style={{
+    ...style,
+    width: '30rem',
+    padding: '1rem',
+  }}>
+    <CardSummaryContainer
+      card={item.card}
+      quantity={item.quantity}
+      draggable={false}
+      showQuantityControls={true}
+      addCardToCollection={data.addCardToCollection}
+      removeCardFromCollection={data.removeCardFromCollection}
+    />
+  </div>
+}, areEqual);
+
 const CollectionContainer = (props: CollectionContainerProps): JSX.Element => {
   const { getDbCard } = useDatabase();
   
   const { workingCollection, collectionFilter, collectionSort, addCardToCollection, removeCardFromCollection } = props;
+  const p1 = performance.now();
   const filteredCollection: CollectionInventory = filterCollectionInventory(workingCollection.inventory, {}, getDbCard, collectionFilter);
+  const p2 = performance.now();
   sortCollectionInventory(filteredCollection, getDbCard, collectionSort);
+  const p3 = performance.now();
+  debugTiming('Collection list timing', [p1, p2, p3]);
 
   const columnCount = useRef<number>(0);
 
@@ -40,33 +72,8 @@ const CollectionContainer = (props: CollectionContainerProps): JSX.Element => {
       },
     }
   }, [ workingCollection ])
-
-  //@ts-ignore
-  const renderGridItem = ({ columnIndex, rowIndex, style }) => {
-    const index = columnCount.current * rowIndex + columnIndex;
-    const item = filteredCollection[index];
-    if (!item) {
-      return <div/>
-    }
-    return <div style={{
-      ...style,
-      width: '30rem',
-      padding: '1rem',
-    }}>
-      <CardSummaryContainer
-        inventoryItem={item}
-        draggable={false}
-        showQuantityControls={true}
-        onQuantityChange={delta => {
-          if (delta > 0) {
-            addCardToCollection(item.card);
-          } else if (delta < 0) {
-            removeCardFromCollection(item.card);
-          }
-        }}
-      />
-    </div>
-  }
+  
+  const memoizedCollection = createMemoizedItems(columnCount.current, filteredCollection, addCardToCollection, removeCardFromCollection);
 
   return <Container className='collection-container'>
     <div className='grid-wrapper' ref={dropRef}>
@@ -81,8 +88,9 @@ const CollectionContainer = (props: CollectionContainerProps): JSX.Element => {
             height={height + 10}
             rowCount={rowCount}
             rowHeight={100}
+            itemData={memoizedCollection}
           >
-            {renderGridItem}
+            {CollectionContainerGridItem}
           </Grid>
         }}
       </AutoSizer>

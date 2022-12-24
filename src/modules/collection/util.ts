@@ -301,16 +301,20 @@ export const sortCollectionInventory = (
 }
 
 export const addCardToCollection = (card: CollectionCard, collection: Collection): Collection => {
+  const inventory = collection.inventory.concat();
   const cardId = cardToCardId(card);
-  const matchIndex = collection.inventory.findIndex(inventoryItem => cardToCardId(inventoryItem.card) === cardId);
+  const matchIndex = inventory.findIndex(inventoryItem => cardToCardId(inventoryItem.card) === cardId);
   if (matchIndex !== -1) {
-    collection.inventory[matchIndex].quantity++;
+    inventory[matchIndex].quantity++;
   } else {
-    collection.inventory.push({
+    inventory.push({
       card, quantity: 1
     })
   }
-  return collection;
+  return {
+    name: collection.name,
+    inventory
+  };
 }
 
 export const removeCardFromCollection = (card: CollectionCard, collection: Collection): Collection => {

@@ -1,8 +1,9 @@
 import * as React from 'react';
+import { memo, useEffect, useState } from 'react';
 import { useDrag } from 'react-dnd';
 
 import { CollectionInventoryItem } from 'modules/collection/constants';
-import { ArtVariantCodes, CardColorHexCodes, CardType, DbCard, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
+import { ArtVariantCodes, CardColorHexCodes, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import CardTooltip from 'modules/common/cardTooltip';
 import { useDatabase } from 'setdb/useDatabase';
 
@@ -12,17 +13,18 @@ import SegmentedControl, { SegmentedControlProps } from '@cloudscape-design/comp
 import './styles.scss';
 
 interface CardSummaryContainerProps {
-  inventoryItem: CollectionInventoryItem;
+  card: CollectionCard;
+  quantity: number;
   draggable: boolean;
   showQuantityControls: boolean;
-  onQuantityChange?: (delta: number) => void;
+  addCardToCollection?: (collectionCard: CollectionCard) => void;
+  removeCardFromCollection?: (collectionCard: CollectionCard) => void;
 }
 
 const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => {
   const { getDbCard } = useDatabase();
 
-  const { draggable, showQuantityControls, onQuantityChange } = props;
-  const { card, quantity } = props.inventoryItem;
+  const { card, quantity, draggable, showQuantityControls, addCardToCollection, removeCardFromCollection } = props;
 
   const dbCard: DbCard | undefined = getDbCard(card, true);
 
@@ -102,13 +104,10 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
                 selectedId={''}
                 options={quantityControlOptions}
                 onChange={({ detail }) => {
-                  if (!onQuantityChange) {
-                    return;
-                  }
-                  if (detail.selectedId === '+') {
-                    onQuantityChange(1);
-                  } else if (detail.selectedId === '-') {
-                    onQuantityChange(-1);
+                  if (detail.selectedId === '+' && addCardToCollection) {
+                    addCardToCollection(card);
+                  } else if (detail.selectedId === '-' && removeCardFromCollection) {
+                    removeCardFromCollection(card);
                   }
                 }}
               />}
@@ -121,4 +120,4 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
   </CardTooltip>
 }
 
-export default CardSummaryContainer;
+export default memo(CardSummaryContainer);
