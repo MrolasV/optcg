@@ -51,9 +51,10 @@ export enum CardRarity {
 export enum ArtVariant {
   PARALLEL,
   SPECIAL_PARALLEL,
+  BOX_TOPPER,
 }
 export const ArtVariantCodes: string[] = [
-  'P', 'SP'
+  'P', 'SP', 'BT'
 ]
 
 export enum CardAttribute {
@@ -64,10 +65,57 @@ export enum CardAttribute {
   SPECIAL,
 }
 
-//TODO
-export const TypesList: string[] = [
-  'Straw Hat Crew', 'Supernovas'
-]
+export enum TypeTags {
+  StrawHatCrew = 'Straw Hat Crew',
+  Supernovas = 'Supernovas',
+  HeartPirates = 'Heart Pirates',
+  FILM = 'FILM',
+  LandOfWano = 'Land of Wano',
+  CaribouPirates = 'Caribou Pirates',
+  BeautifulPirates = 'Beautiful Pirates',
+  Minks = 'Minks',
+  Animal = 'Animal',
+  HapposuiArmy = 'Happosui Army',
+  FishMan = 'Fish-Man',
+  Giant = 'Giant',
+  NewGiantPirates = 'New Giant Pirates',
+  BartoClub = 'Barto Club',
+  FormerWhitebeardPirates = 'Former Whitebeard Pirates',
+  KouzukiClan = 'Kouzuki Clan',
+  TheAkazayaNine = 'The Akazaya Nine',
+  KidPirates = 'Kid Pirates',
+  Navy = 'Navy',
+  DrakePirates = 'Drake Pirates',
+  HawkinsPirates = 'Hawkins Pirates',
+  TheSevenWarlordsOfTheSea = 'The Seven Warlords of the Sea',
+  DonquixotePirates = 'Donquixote Pirates',
+  TheFourEmperors = 'The Four Emperors',
+  AnimalKingdomPirates = 'Animal Kingdom Pirates',
+  BaroqueWorks = 'Baroque Works',
+  ArlongPirates = 'Arlong Pirates',
+  BuggyPirates = 'Buggy Pirates',
+  PunkHazard = 'Punk Hazard',
+  KriegPirates = 'Krieg Pirates',
+  ThrillerBarkPirates = 'Thriller Bark Pirates',
+  Scientist = 'Scientist',
+  BiologicalWeapon = 'Biological Weapon',
+  RevolutionaryArmy = 'Revolutionary Army',
+  Dressrosa = 'Dressrosa',
+  KujaPirates = 'Kuja Pirates',
+  KurozumiClan = 'Kurozumi Clan',
+  OnAirPirates = 'On-Air Pirates',
+  SMILE = 'SMILE',
+  Smile = 'Smile',
+  RedHairedPirates = 'Red-Haired Pirates',
+  Alabasta = 'Alabasta',
+  FiretankPirates = 'Firetank Pirates',
+  FallenMonkPirates = 'Fallen Monk Pirates',
+  BonneyPirates = 'Bonney Pirates',
+  TheSunPirates = 'The Sun Pirates',
+  BuggysDelivery = `Buggy's Delivery`,
+  BlackbeardPirates = 'Blackbeard Pirates',
+}
+export const TypesList: string[] = Object.values(TypeTags);
 
 export interface CollectionCard {
   setId: SetId;

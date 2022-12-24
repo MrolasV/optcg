@@ -5,8 +5,9 @@ import { CardFilter } from 'modules/common/constants';
 import ExpandToggle from './expandToggle';
 import FormFieldWithSegments from 'modules/common/formFieldWithSegments';
 import MultiSegmentedIconControl from 'modules/common/multiSegmentedIconControl';
-import { ArtistList, ArtVariant, CardAttribute, CardColor, CardRarity, CardType, SetId, SetNames, TypesList } from 'setdb/constants';
+import { ArtVariant, CardAttribute, CardColor, CardRarity, CardType, SetId, SetNames, TypesList } from 'setdb/constants';
 import { capitalizeFirst } from 'modules/common/util';
+import { useDatabase } from 'setdb/useDatabase';
 
 import Container from '@cloudscape-design/components/container';
 import SpaceBetween from '@cloudscape-design/components/space-between';
@@ -29,6 +30,8 @@ interface CardSearchFilterProps {
 
 const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const { expandToggleSide, expandToggleText, collectionContainsText, showCollectionContainsSelect, onFilterChange } = props;
+
+  const { artistList } = useDatabase();
 
   const [ cardName, setCardName ] = useState<string>('');
   const [ cardSet, setCardSet ] = useState<string>('All');
@@ -306,6 +309,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
         <Multiselect
           selectedOptions={selectedTypes}
           options={typeOptions}
+          filteringType='auto'
           onChange={({ detail }) => setTypeTags(detail.selectedOptions.map(option => option.value || '')) }
         />
       </FormFieldWithSegments>
@@ -395,7 +399,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const renderVanitiesFields = (): JSX.Element => {
     const rarityOptions: SelectProps.Option[] = Object.keys(CardRarity).filter(v => isNaN(Number(v))).map(rarity => {
       return {
-        label: capitalizeFirst(rarity),
+        label: capitalizeFirst(rarity).replace('_', ' '),
         value: rarity,
       }
     });
@@ -411,7 +415,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     artVariantOptions.splice(0, 0, { label: 'All', value: 'All' });
     const selectedArtVariantOption: SelectProps.Option = artVariantOptions.find(option => option.value === artVariant) || {};
 
-    const artistOptions: SelectProps.Option[] = ArtistList.map(artist => {
+    const artistOptions: SelectProps.Option[] = artistList.map(artist => {
       return {
         label: artist,
         value: artist,
@@ -444,6 +448,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
         <Select
           selectedOption={selectedArtist}
           options={artistOptions}
+          filteringType='auto'
           onChange={({ detail }) => setArtist(detail.selectedOption.value || 'All')}
         />
       </FormField>

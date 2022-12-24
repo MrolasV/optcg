@@ -74,7 +74,7 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
         </div>
       </div>
       <div className='card-tooltip_footer'>
-        <div/>
+        <div>{card.artist ? <><strong>Artist: </strong>{card.artist}</> : ''}</div>
         <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
       </div>
     </div>

@@ -7,10 +7,22 @@ export const cardToCardId = (card: DbCard | CollectionCard): string => {
   return `${card.setId}-${card.setNumber}-${card.hasOwnProperty('artVariant') ? card.artVariant : ''}`;
 }
 
+export const dbCardToCollectionCard = (dbCard: DbCard): CollectionCard => {
+  const collectionCard: CollectionCard = {
+    setId: dbCard.setId,
+    setNumber: dbCard.setNumber,
+    blockIcon: dbCard.blockIcon,
+  }
+  if (dbCard.hasOwnProperty('artVariant')) {
+    collectionCard.artVariant = dbCard.artVariant;
+  }
+  return collectionCard;
+}
+
 export const filterCollectionInventory = (
   inventory: CollectionInventory, 
   comparativeQuantities: {[cardId: string]: number}, 
-  getDbCard: (collectionCard: CollectionCard) => DbCard | undefined,
+  getDbCard: (collectionCard: CollectionCard, useSpecifics?: boolean) => DbCard | undefined,
   cardFilter?: CardFilter,
 ): CollectionInventory => {
   if (!cardFilter) {
@@ -18,7 +30,7 @@ export const filterCollectionInventory = (
   }
 
   return inventory.filter(listItem => {
-    const card = getDbCard(listItem.card);
+    const card = getDbCard(listItem.card, true);
     if (!card) {
       return false;
     }
@@ -171,7 +183,7 @@ export const filterCollectionInventory = (
 
 export const sortCollectionInventory = (
   inventory: CollectionInventory, 
-  getDbCard: (collectionCard: CollectionCard) => DbCard | undefined,
+  getDbCard: (collectionCard: CollectionCard, useSpecifics?: boolean) => DbCard | undefined,
   cardSort?: CardSort
 ) => {
   if (!cardSort) {
@@ -247,8 +259,8 @@ export const sortCollectionInventory = (
   }
 
   inventory.sort((a: CollectionInventoryItem, b: CollectionInventoryItem) => {
-    const _a = getDbCard(a.card);
-    const _b = getDbCard(b.card);
+    const _a = getDbCard(a.card, true);
+    const _b = getDbCard(b.card, true);
 
     if (!_a && !_b) {
       return 0;

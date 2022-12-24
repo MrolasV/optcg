@@ -5,8 +5,8 @@ import { CardFilter, CardSort } from 'modules/common/constants';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { Collection, CollectionInventory } from 'modules/collection/constants';
-import { DbCard } from 'setdb/constants';
-import { cardToCardId, filterCollectionInventory, sortCollectionInventory } from 'modules/collection/util';
+import { CollectionCard, DbCard } from 'setdb/constants';
+import { cardToCardId, dbCardToCollectionCard, filterCollectionInventory, sortCollectionInventory } from 'modules/collection/util';
 import CardSummaryContainer from '../../common/cardSummaryContainer';
 import { useDatabase } from 'setdb/useDatabase';
 import useForceUpdate from 'modules/common/useForceUpdate';
@@ -35,40 +35,29 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
   const cardListItems: CollectionInventory = cardPool.inventory.reduce((acc, cardData) => {
     const baseCardId = `${cardData.card.setId}-${cardData.card.setNumber}-`;
     const baseDbCard = getDbCard(cardData.card);
-    const baseCard = baseDbCard ? {...baseDbCard} : undefined;
-    if (!baseCard) {
+    if (!baseDbCard) {
       return acc;
     }
-    if (baseCard.hasOwnProperty('artVariants')) {
-      delete baseCard.artVariants;
-    }
-    if (baseCard.hasOwnProperty('artists')) {
-      delete baseCard.artists;
-    }
+    const baseCard = dbCardToCollectionCard(baseDbCard);
 
-    let artist = baseDbCard!!.artists && baseDbCard!!.artists.length > 0 ? baseDbCard!!.artists[0] : 'Manga';
     let workingQuantity = workingCardPoolQuantities[baseCardId] || 0;
     let quantity = workingQuantity;
     if (quantityMode === 'subtract') { // deck view. will cardPool will be a user collection so no need to worry about art variants existing in pool
       quantity = cardData.quantity - workingQuantity;
     }
-    const card: DbCard = {
-      ...baseCard,
-      artist
-    }
+    const card: CollectionCard = { ...baseCard }
     acc.push({ card, quantity });
 
-    baseDbCard!!.artVariants?.forEach((artVariant, index) => {
+    baseDbCard!!.artVariants?.forEach(artVariant => {
       const cardId = `${baseCardId}${artVariant}`;
-      artist = baseDbCard!!.artists && baseDbCard!!.artists.length > index + 1 ? baseDbCard!!.artists[index + 1] : 'Manga';
       workingQuantity = workingCardPoolQuantities[cardId] || 0;
       quantity = workingQuantity;
       if (quantityMode === 'subtract') {
         quantity = cardData.quantity - workingQuantity;
       }
-      const cardVariant: DbCard = {
+      const cardVariant: CollectionCard = {
         ...baseCard,
-        artVariant, artist
+        artVariant
       }
       acc.push({ card: cardVariant, quantity });
     });

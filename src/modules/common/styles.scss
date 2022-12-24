@@ -82,6 +82,16 @@
     justify-content: space-between;
     font-size: 1.2rem;
     line-height: 1.6rem;
+
+    & > div:nth-child(1) {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    & > div:nth-child(2) {
+      flex: none;
+    }
   }
 }
 

@@ -24,7 +24,7 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
   const { draggable, showQuantityControls, onQuantityChange } = props;
   const { card, quantity } = props.inventoryItem;
 
-  const dbCard: DbCard | undefined = getDbCard(card);
+  const dbCard: DbCard | undefined = getDbCard(card, true);
 
   //@ts-ignore
   const [{ isDragging }, dragRef] = useDrag(() => {
@@ -45,8 +45,8 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
     return typeTagBg;
   }
 
-  const setCode: string = dbCard ? Object.entries(SetId)[dbCard.setId][1] as string : '';
-  const variantString: string = dbCard ? (dbCard.hasOwnProperty('artVariant') ? ArtVariantCodes[dbCard.artVariant || 0] : '') : '';
+  const setCode: string = Object.entries(SetId)[card.setId][1] as string;
+  const variantString: string = card.hasOwnProperty('artVariant') ? ArtVariantCodes[card.artVariant || 0] : '';
 
   const getDetailLine1 = (): JSX.Element => {
     if (dbCard!!.cardType === CardType.LEADER) {
