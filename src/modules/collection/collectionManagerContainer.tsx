@@ -72,6 +72,13 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
   }
   const localCollectionItems: ButtonDropdownProps.Item[] = getLocalCollectionItems();
 
+  const onClear = () => {
+    onCollectionLoad({
+      name: '',
+      inventory: []
+    })
+  }
+
   const onSaveAction = () => {
     if (!workingCollection.name) {
       setShowEmptyNameWarning(true);
@@ -168,6 +175,7 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
             onItemClick={({detail}) => onDeleteAction(detail.id)}
             disabled={!localCollectionItems.length}
           >Delete</ButtonDropdown>
+          <Button onClick={onClear}>Clear</Button>
         </div>
       </div>
       <div className='collection-manager_rhs'>
