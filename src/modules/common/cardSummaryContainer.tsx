@@ -37,7 +37,7 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
         isDragging: !!monitor.isDragging()
       })
     }
-  })
+  }, [card])
 
   const getColorTagBG = () => {
     // https://blog.prototypr.io/css-only-multi-color-backgrounds-4d96a5569a20
