@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { memo, useEffect, useState } from 'react';
+import { memo } from 'react';
 import { useDrag } from 'react-dnd';
 
-import { CollectionInventoryItem } from 'modules/collection/constants';
-import { ArtVariantCodes, CardColorHexCodes, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
+import { ArtVariantCodes, CardColorHexCodes, CardType, CollectionCard, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import CardTooltip from 'modules/common/cardTooltip';
 import { useDatabase } from 'setdb/useDatabase';
 
@@ -83,37 +82,42 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
         }}
       >
         {!!dbCard && <div className='card-summary_content'>
-          <div>
-            <div>
-              <div className='card-summary_card-name'>{dbCard.cardName}</div>
-              {getDetailLine1()}
-              {getDetailLine2()}
-            </div>
-            <div className='card-summary_card-type-tag'
-              style={{
-                backgroundImage: getColorTagBG()
-              }}
-            >
-              {Object.entries(CardType)[dbCard.cardType][1]}
-            </div>
+          <div className='card-summary_img'>
+            {dbCard && dbCard.imgObj && <img src={dbCardImgLink(dbCard)} />}
           </div>
-          <div className='card-summary_bottom-row'>
+          <div className='card-summary_details'>
             <div>
-              <div>{`In collection: ${quantity}`}</div>
-              {showQuantityControls && <SegmentedControl
-                selectedId={''}
-                options={quantityControlOptions}
-                onChange={({ detail }) => {
-                  if (detail.selectedId === '+' && addCardToCollection) {
-                    addCardToCollection(card);
-                  } else if (detail.selectedId === '-' && removeCardFromCollection) {
-                    removeCardFromCollection(card);
-                  }
+              <div>
+                <div className='card-summary_card-name'>{dbCard.cardName}</div>
+                {getDetailLine1()}
+                {getDetailLine2()}
+              </div>
+              <div className='card-summary_card-type-tag'
+                style={{
+                  backgroundImage: getColorTagBG()
                 }}
-              />}
+              >
+                {Object.entries(CardType)[dbCard.cardType][1]}
+              </div>
             </div>
-            <div>{`${setCode}-${dbCard.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
-          </div>
+            <div className='card-summary_bottom-row'>
+              <div>
+                <div>{`In collection: ${quantity}`}</div>
+                {showQuantityControls && <SegmentedControl
+                  selectedId={''}
+                  options={quantityControlOptions}
+                  onChange={({ detail }) => {
+                    if (detail.selectedId === '+' && addCardToCollection) {
+                      addCardToCollection(card);
+                    } else if (detail.selectedId === '-' && removeCardFromCollection) {
+                      removeCardFromCollection(card);
+                    }
+                  }}
+                />}
+              </div>
+              <div>{`${setCode}-${dbCard.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
+            </div>
+        </div>
         </div>}
       </div>
     </Container>

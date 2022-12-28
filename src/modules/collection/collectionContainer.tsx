@@ -36,7 +36,7 @@ const CollectionContainerGridItem = memo(({ columnIndex, rowIndex, style, data }
   }
   return <div style={{
     ...style,
-    width: '30rem',
+    width: '29.5rem',
     padding: '1rem',
   }}>
     <CardSummaryContainer
@@ -79,12 +79,12 @@ const CollectionContainer = (props: CollectionContainerProps): JSX.Element => {
     <div className='grid-wrapper' ref={dropRef}>
       <AutoSizer>
         {({ height, width }) => {
-          columnCount.current = Math.floor(width / 310);
+          columnCount.current = Math.floor(width / 305);
           const rowCount = Math.ceil(filteredCollection.length / columnCount.current);
           return <Grid
             width={width + 20}
             columnCount={columnCount.current}
-            columnWidth={310}
+            columnWidth={305}
             height={height + 10}
             rowCount={rowCount}
             rowHeight={100}

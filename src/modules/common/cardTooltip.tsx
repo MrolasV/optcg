@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { TooltipWrapper, PlacesType } from 'react-tooltip';
-import { ArtVariantCodes, CardAttribute, CardColorHexCodes, CardType, DbCard, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
+import { ArtVariantCodes, CardAttribute, CardColorHexCodes, CardType, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import { capitalizeFirst } from './util';
 
 interface CardTooltipProps {
@@ -46,36 +46,41 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
 
   const renderContent = (): JSX.Element => {
     return <div className='card-tooltip'>
-      <div>
-        <div className='card-tooltip_header'>
-          <div className='card-tooltip_card-name'>{card.cardName}</div>
-          <div className='card-tooltip_card-type-tag'
-            style={{
-              backgroundImage: typeTagBg
-            }}
-          >
-            {Object.entries(CardType)[card.cardType][1]}
+      <div className='card-tooltip_img'>
+        {card && card.imgObj && <img src={dbCardImgLink(card)} />}
+      </div>
+      <div className='card-tooltip_details'>
+        <div>
+          <div className='card-tooltip_header'>
+            <div className='card-tooltip_card-name'>{card.cardName}</div>
+            <div className='card-tooltip_card-type-tag'
+              style={{
+                backgroundImage: typeTagBg
+              }}
+            >
+              {Object.entries(CardType)[card.cardType][1]}
+            </div>
+          </div>
+          <div className='card-tooltip_content'>
+            <div><strong>{costLifeField}</strong>{costLifeText}</div>
+            {!!attributeText && <div><strong>Attribute: </strong>{attributeText}</div>}
+            {!!powerText && <div><strong>Power: </strong>{powerText}</div>}
+            {!!counterText && <div><strong>Counter: </strong>{counterText}</div>}
+            <div className='card-tooltip_content-long card-tooltip_content-short'><strong>Types: </strong>{typesText}</div>
+            {!!effectText && <div className='card-tooltip_content-long'>
+              <strong>Effect:</strong>
+              <div>{effectText}</div>
+            </div>}
+            {!!triggerText && <div className='card-tooltip_content-long'>
+              <strong>Trigger:</strong>
+              <div>{triggerText}</div>  
+            </div>}
           </div>
         </div>
-        <div className='card-tooltip_content'>
-          <div><strong>{costLifeField}</strong>{costLifeText}</div>
-          {!!attributeText && <div><strong>Attribute: </strong>{attributeText}</div>}
-          {!!powerText && <div><strong>Power: </strong>{powerText}</div>}
-          {!!counterText && <div><strong>Counter: </strong>{counterText}</div>}
-          <div className='card-tooltip_content-long card-tooltip_content-short'><strong>Types: </strong>{typesText}</div>
-          {!!effectText && <div className='card-tooltip_content-long'>
-            <strong>Effect:</strong>
-            <div>{effectText}</div>
-          </div>}
-          {!!triggerText && <div className='card-tooltip_content-long'>
-            <strong>Trigger:</strong>
-            <div>{triggerText}</div>  
-          </div>}
+        <div className='card-tooltip_footer'>
+          <div>{card.artist ? <><strong>Artist: </strong>{card.artist}</> : ''}</div>
+          <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
         </div>
-      </div>
-      <div className='card-tooltip_footer'>
-        <div>{card.artist ? <><strong>Artist: </strong>{card.artist}</> : ''}</div>
-        <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
       </div>
     </div>
   }

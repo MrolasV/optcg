@@ -87,16 +87,20 @@ const useDatabaseImpl = () => {
         cardSet[setNumber][-1] = dbCard;
         const baseCard = {...dbCard};
         baseCard.artist = dbCard.artists && dbCard.artists.length ? dbCard.artists[0] : '';
+        baseCard.imgObj = dbCard.imgObjs && dbCard.imgObjs.length ? dbCard.imgObjs[0] : '';
         delete baseCard.artVariants;
         delete baseCard.artists;
+        delete baseCard.imgObjs;
         cardSet[setNumber][0] = baseCard;
         if (dbCard.artVariants) {
           dbCard.artVariants.forEach((artVariant, index) => {
             const artist = dbCard.artists && dbCard.artists.length > index + 1 ? dbCard.artists[index + 1] : '';
+            const imgObj = dbCard.imgObjs && dbCard.imgObjs.length > index + 1 ? dbCard.imgObjs[index + 1] : '';
             cardSet[setNumber][artVariant + 1] = {
               ...baseCard,
               artVariant,
               artist,
+              imgObj,
             };
           });
         }

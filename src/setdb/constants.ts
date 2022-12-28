@@ -136,6 +136,8 @@ interface IDbCard {
   artVariants?: ArtVariant[];
   artist?: string;
   artists?: string[];
+  imgObj?: string;
+  imgObjs?: string[];
   blockIcon: number;
   types: string[];
 }
@@ -167,6 +169,15 @@ export interface DbStageCard extends IDbCard {
   effectText?: string;
 }
 
-export const ArtistList: string[] = [
-  'Manga', 'Anime', 
-]
+export const dbCardImgLink = (dbCard: DbCard) => {
+  if (!dbCard.imgObj) {
+    return '';
+  }
+  return cardImgLink(dbCard.setId, dbCard.setNumber, dbCard.imgObj);
+}
+
+export const cardImgLink = (setId: SetId, setNumber: number, obj: string) => {
+  const setString: string = Object.values(SetId)[setId] as string;
+  const setNumberString: string = setNumber.toString().padStart(3, '0');
+  return `https://s3.amazonaws.com/prod.bandaitcgplus.files.api/card_image/OP-EN/${setString}/${setString}-${setNumberString}${obj}`;
+}
