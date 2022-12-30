@@ -245,8 +245,6 @@ export const sortCollectionInventory = (
     }
   }
   const variantSortFunc = (a: DbCard, b: DbCard) => {
-    const _a = cardSort.direction === CardSortDirection.DESC ? a : b;
-    const _b = cardSort.direction === CardSortDirection.DESC ? b : a;
     if (!a.hasOwnProperty('artVariant') && !b.hasOwnProperty('artVariant')) {
       return 0;
     } else if (!a.hasOwnProperty('artVariant')) {
@@ -254,7 +252,7 @@ export const sortCollectionInventory = (
     } else if (!b.hasOwnProperty('artVariant')) {
       return 1;
     } else {
-      return (_a.artVariant || 0) - (_b.artVariant || 0);
+      return (a.artVariant || 0) - (b.artVariant || 0);
     }
   }
 

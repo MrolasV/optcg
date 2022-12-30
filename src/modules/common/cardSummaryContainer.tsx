@@ -84,7 +84,7 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
       >
         {!!dbCard && <div className='card-summary_content'>
           <div className='card-summary_img'>
-            {dbCard && dbCard.imgObj && <img src={dbCardImgLink(dbCard)} />}
+            {dbCard && <img src={dbCardImgLink(dbCard)} />}
           </div>
           <div className='card-summary_details'>
             <div>

@@ -50,7 +50,7 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
   const renderContent = (): JSX.Element => {
     return <div className='card-tooltip'>
       <div className='card-tooltip_img'>
-        {card && card.imgObj && <img src={dbCardImgLink(card)} />}
+        {card && <img src={dbCardImgLink(card)} />}
       </div>
       <div className='card-tooltip_details'>
         <div>

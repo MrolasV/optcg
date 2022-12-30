@@ -49,6 +49,7 @@ export enum CardRarity {
   SUPER_RARE,
   SECRET_RARE,
   LEADER,
+  PROMOTIONAL,
 }
 
 export enum ArtVariant {
@@ -58,6 +59,9 @@ export enum ArtVariant {
 }
 export const ArtVariantCodes: string[] = [
   'P', 'SP', 'BT'
+]
+export const ArtVariantImgPostfixes: string[] = [
+  '_p1', '_p2', '_p1'
 ]
 
 export enum CardAttribute {
@@ -117,6 +121,8 @@ export enum TypeTags {
   TheSunPirates = 'The Sun Pirates',
   BuggysDelivery = `Buggy's Delivery`,
   BlackbeardPirates = 'Blackbeard Pirates',
+  JellyfishPirates = 'Jellyfish Pirates',
+  WhitebeardPirates = 'Whitebeard Pirates',
 }
 export const TypesList: string[] = Object.values(TypeTags);
 
@@ -173,14 +179,13 @@ export interface DbStageCard extends IDbCard {
 }
 
 export const dbCardImgLink = (dbCard: DbCard) => {
-  if (!dbCard.imgObj) {
-    return '';
-  }
-  return cardImgLink(dbCard.setId, dbCard.setNumber, dbCard.imgObj);
+  return cardImgLink(dbCard.setId, dbCard.setNumber, dbCard.artVariant);
 }
 
-export const cardImgLink = (setId: SetId, setNumber: number, obj: string) => {
+export const cardImgLink = (setId: SetId, setNumber: number, artVariant?: ArtVariant) => {
   const setString: string = Object.values(SetId)[setId] as string;
   const setNumberString: string = setNumber.toString().padStart(3, '0');
-  return `https://s3.amazonaws.com/prod.bandaitcgplus.files.api/card_image/OP-EN/${setString}/${setString}-${setNumberString}${obj}`;
+  const artVariantString = artVariant !== undefined ? ArtVariantImgPostfixes[artVariant] : '';
+  return `https://en.onepiece-cardgame.com/images/cardlist/card/${setString}-${setNumberString}${artVariantString}.png`
+  // return `https://s3.amazonaws.com/prod.bandaitcgplus.files.api/card_image/OP-EN/${setString}/${setString}-${setNumberString}${artVariant}`;
 }
