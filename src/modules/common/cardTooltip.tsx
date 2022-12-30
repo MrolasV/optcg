@@ -45,7 +45,7 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
     `${characterCard.counter || '-'}` : '';
   const typesText: string = card.types.join('/');
   const effectText: string = characterCard.effectText || '';
-  const triggerText: string = (card.cardType === CardType.CHARACTER && characterCard.triggerText) || '';
+  const triggerText: string = ((card.cardType === CardType.CHARACTER || card.cardType === CardType.EVENT) && characterCard.triggerText) || '';
 
   const renderContent = (): JSX.Element => {
     return <div className='card-tooltip'>
