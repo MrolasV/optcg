@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useRef, memo } from 'react';
+import { useRef, memo, useEffect, useState, useCallback } from 'react';
 import { useDrop } from 'react-dnd';
 
 import { Collection, CollectionInventory, CollectionInventoryItem } from './constants';
@@ -10,10 +10,10 @@ import { CollectionCard, DbCard } from 'setdb/constants';
 import { filterCollectionInventory, sortCollectionInventory } from './util';
 import { CardFilter, CardSort } from 'modules/common/constants';
 import memoize from "memoize-one";
-
-import Container from '@cloudscape-design/components/container';
 import { useDatabase } from 'setdb/useDatabase';
 import { debugTiming } from 'modules/common/util';
+
+import Container from '@cloudscape-design/components/container';
 
 interface CollectionContainerProps {
   workingCollection: Collection;
@@ -44,6 +44,7 @@ const CollectionContainerGridItem = memo(({ columnIndex, rowIndex, style, data }
       quantity={item.quantity}
       draggable={false}
       showQuantityControls={true}
+      showQuantity={true}
       addCardToCollection={data.addCardToCollection}
       removeCardFromCollection={data.removeCardFromCollection}
     />
@@ -52,6 +53,15 @@ const CollectionContainerGridItem = memo(({ columnIndex, rowIndex, style, data }
 
 const CollectionContainer = (props: CollectionContainerProps): JSX.Element => {
   const { getDbCard } = useDatabase();
+  
+  const [,updateState] = useState<any>();
+  const forceUpdate = useCallback(() => updateState({}), []);
+  useEffect(() => {
+    // Janky. TODO: figure out why a rerender is needed for memoization to not fuck up the grid render
+    setTimeout(() => {
+      forceUpdate();
+    }, 0);
+  }, []);
   
   const { workingCollection, collectionFilter, collectionSort, addCardToCollection, removeCardFromCollection } = props;
   const p1 = performance.now();

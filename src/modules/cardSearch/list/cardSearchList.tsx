@@ -10,17 +10,19 @@ import { cardToCardId, dbCardToCollectionCard, filterCollectionInventory, sortCo
 import CardSummaryContainer from '../../common/cardSummaryContainer';
 import { useDatabase } from 'setdb/useDatabase';
 import memoize from "memoize-one";
+import { useLocation } from 'react-router';
+import { Page } from 'home/page';
 
 interface CardSearchListProps {
   cardPool: Collection; // list these
   workingCardPool: Collection; // for quantity counting
   cardSort: CardSort;
   cardFilter: CardFilter;
-  quantityMode: 'subtract' | 'show';
+  quantityMode: 'poolCount' | 'workingCount';
 }
 
-const createMemoizedItems = memoize((filteredList) => ({
-  filteredList
+const createMemoizedItems = memoize((filteredList, showQuantity) => ({
+  filteredList, showQuantity,
 }));
 
 //@ts-ignore
@@ -30,7 +32,13 @@ const CardSearchListItem = memo(({ index, style, data }) => (
     paddingLeft: '8px',
     width: 'calc(100% - 16px)',
   }}>
-    <CardSummaryContainer card={data.filteredList[index].card} quantity={data.filteredList[index].quantity} draggable={true} showQuantityControls={false} />
+    <CardSummaryContainer
+      card={data.filteredList[index].card}
+      quantity={data.filteredList[index].quantity}
+      draggable={true}
+      showQuantityControls={false}
+      showQuantity={data.showQuantity}
+    />
   </div>
 ), areEqual)
 
@@ -39,43 +47,48 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
   
   const { cardPool, workingCardPool, cardSort, cardFilter, quantityMode } = props;
 
+  const location = useLocation();
+  const view: Page = location.pathname.split('/')[1] || Page.collection;
+
   const workingCardPoolQuantities: {[key: string]: number} = {};
   workingCardPool.inventory.forEach(cardData => {
     const cardId = cardToCardId(cardData.card);
     workingCardPoolQuantities[cardId] = cardData.quantity;
   });
 
-   //#region List creation
+  //#region List creation
 
   const cardListItems: CollectionInventory = cardPool.inventory.reduce((acc, cardData) => {
     const baseCardId = `${cardData.card.setId}-${cardData.card.setNumber}-`;
-    const baseDbCard = getDbCard(cardData.card);
-    if (!baseDbCard) {
+    const baseDbCard = cardPool.name === '_db' ? getDbCard(cardData.card) : undefined;
+    if (!baseDbCard && cardPool.name === '_db') {
       return acc;
     }
-    const baseCard = dbCardToCollectionCard(baseDbCard);
+    const baseCard = cardPool.name === '_db' ? dbCardToCollectionCard(baseDbCard!!) : cardData.card;
 
     let workingQuantity = workingCardPoolQuantities[baseCardId] || 0;
     let quantity = workingQuantity;
-    if (quantityMode === 'subtract') { // deck view. will cardPool will be a user collection so no need to worry about art variants existing in pool
-      quantity = cardData.quantity - workingQuantity;
+    if (quantityMode === 'poolCount') { // deck view. will cardPool will be a user collection so no need to worry about art variants existing in pool
+      quantity = cardData.quantity;
     }
     const card: CollectionCard = { ...baseCard }
     acc.push({ card, quantity });
 
-    baseDbCard!!.artVariants?.forEach(artVariant => {
-      const cardId = `${baseCardId}${artVariant}`;
-      workingQuantity = workingCardPoolQuantities[cardId] || 0;
-      quantity = workingQuantity;
-      if (quantityMode === 'subtract') {
-        quantity = cardData.quantity - workingQuantity;
-      }
-      const cardVariant: CollectionCard = {
-        ...baseCard,
-        artVariant
-      }
-      acc.push({ card: cardVariant, quantity });
-    });
+    if (cardPool.name === '_db') {
+      baseDbCard!!.artVariants?.forEach(artVariant => {
+        const cardId = `${baseCardId}${artVariant}`;
+        workingQuantity = workingCardPoolQuantities[cardId] || 0;
+        quantity = workingQuantity;
+        if (quantityMode === 'poolCount') {
+          quantity = cardData.quantity;
+        }
+        const cardVariant: CollectionCard = {
+          ...baseCard,
+          artVariant
+        }
+        acc.push({ card: cardVariant, quantity });
+      });
+    }
     return acc;
   }, [] as CollectionInventory);
 
@@ -88,7 +101,8 @@ const CardSearchList = (props: CardSearchListProps): JSX.Element => {
 
   //#endregion
 
-  const memoizedList = createMemoizedItems(filteredListItems);
+  const showCardQuantity = view === Page.collection || (!!cardPool.name && cardPool.name !== '_db');
+  const memoizedList = createMemoizedItems(filteredListItems, showCardQuantity);
 
   return <div className='scroller-wrapper' id='scroller-wrapper'>
     <AutoSizer disableWidth>

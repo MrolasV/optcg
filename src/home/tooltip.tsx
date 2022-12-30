@@ -1,12 +1,20 @@
 import * as React from 'react';
 import { useRef } from 'react';
 
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { Tooltip as ReactTooltip, PlacesType } from 'react-tooltip';
 import useMutationObserver from 'modules/common/useMutationObserver';
 
 import './styles.scss';
 
-const Tooltip = (): JSX.Element => {
+interface TooltipProps {
+  place?: PlacesType;
+  anchorId?: string;
+  children?: JSX.Element;
+}
+
+const Tooltip = (props: TooltipProps): JSX.Element => {
+  const { place, anchorId, children } = props;
+
   const mutationRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLDivElement>;
 
   const onMutation = (mutations: MutationRecord[]) => {
@@ -17,7 +25,9 @@ const Tooltip = (): JSX.Element => {
   const arrowClassNameList = ['optcg-tooltip_arrow-top', 'optcg-tooltip_arrow-right', 'optcg-tooltip_arrow-bottom', 'optcg-tooltip_arrow-left'];
 
   const correctArrow = () => {
-    const tooltipElement = document.querySelector('.optcg-tooltip');
+    const containerElement = anchorId ? document.querySelector(`#${anchorId}_wrapper-id`) : document;
+    if (!containerElement) return;
+    const tooltipElement = containerElement.querySelector('.optcg-tooltip');
     if (!tooltipElement) return;
     const arrowElement = tooltipElement.querySelector('.optcg-tooltip_arrow') as HTMLDivElement;
     if (!arrowElement) return;
@@ -47,8 +57,10 @@ const Tooltip = (): JSX.Element => {
     })
   }
 
-  return <div ref={mutationRef}>
-    <ReactTooltip className='optcg-tooltip' classNameArrow='optcg-tooltip_arrow'/>
+  return <div ref={mutationRef} id={anchorId ? `${anchorId}_wrapper-id` : undefined}>
+    <ReactTooltip className='optcg-tooltip' classNameArrow='optcg-tooltip_arrow' place={place} anchorId={anchorId}>
+      {children}
+    </ReactTooltip>
   </div>
 }
 

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
+import Tooltip from 'home/tooltip';
 import { TooltipWrapper, PlacesType } from 'react-tooltip';
 import { ArtVariantCodes, CardAttribute, CardColorHexCodes, CardType, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import { capitalizeFirst } from './util';
@@ -10,10 +11,12 @@ interface CardTooltipProps {
   place?: PlacesType;
   card?: DbCard;
   children?: React.ReactNode;
+  noWrapper?: boolean;
+  anchorId?: string;
 }
 
 const CardTooltip = (props: CardTooltipProps): JSX.Element => {
-  const { place, card, children } = props;
+  const { place, card, children, noWrapper, anchorId } = props;
 
   if (!card) {
     return <>{children}</>
@@ -82,6 +85,15 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
           <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
         </div>
       </div>
+    </div>
+  }
+
+  if (noWrapper) {
+    return <div>
+      {children}
+      <Tooltip place={place} anchorId={anchorId}>
+        {renderContent()}
+      </Tooltip>
     </div>
   }
 

@@ -3,8 +3,8 @@ import { getLocalStorageItem } from "modules/common/util";
 import { ArtVariant, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, SetId } from "setdb/constants";
 import { Collection, CollectionInventory, CollectionInventoryItem } from "./constants";
 
-export const cardToCardId = (card: DbCard | CollectionCard): string => {
-  return `${card.setId}-${card.setNumber}-${card.hasOwnProperty('artVariant') ? card.artVariant : ''}`;
+export const cardToCardId = (card: DbCard | CollectionCard, ignoreVariant?: boolean): string => {
+  return `${card.setId}-${card.setNumber}-${!ignoreVariant && card.hasOwnProperty('artVariant') ? card.artVariant : ''}`;
 }
 
 export const dbCardToCollectionCard = (dbCard: DbCard): CollectionCard => {

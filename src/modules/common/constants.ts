@@ -48,5 +48,7 @@ export const lsWorkingCollectionKey = 'working-collection';
 export const lsWorkingCollectionNameKey = 'working-collection-name';
 export const lsCollectionListKey = 'collection-list';
 export const lsCollectionKey = (name: string) => `collection_${name}`;
+export const lsWorkingDeckKey = 'working-deck';
+export const lsWorkingDeckNameKey = 'working-deck-name';
 export const lsDeckListKey = 'deck-list';
 export const lsDeckKey = (name: string) => `deck_${name}`;

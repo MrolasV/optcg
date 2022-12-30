@@ -16,6 +16,7 @@ interface CardSummaryContainerProps {
   quantity: number;
   draggable: boolean;
   showQuantityControls: boolean;
+  showQuantity: boolean;
   addCardToCollection?: (collectionCard: CollectionCard) => void;
   removeCardFromCollection?: (collectionCard: CollectionCard) => void;
 }
@@ -23,7 +24,7 @@ interface CardSummaryContainerProps {
 const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => {
   const { getDbCard } = useDatabase();
 
-  const { card, quantity, draggable, showQuantityControls, addCardToCollection, removeCardFromCollection } = props;
+  const { card, quantity, draggable, showQuantityControls, showQuantity, addCardToCollection, removeCardFromCollection } = props;
 
   const dbCard: DbCard | undefined = getDbCard(card, true);
 
@@ -102,7 +103,7 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
             </div>
             <div className='card-summary_bottom-row'>
               <div>
-                <div>{`In collection: ${quantity}`}</div>
+                <div>{showQuantity ? `In collection: ${quantity}` : ''}</div>
                 {showQuantityControls && <SegmentedControl
                   selectedId={''}
                   options={quantityControlOptions}

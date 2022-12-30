@@ -11,13 +11,29 @@
     gap: 1rem;
     flex-direction: column;
 
+    .sorting-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .sorting-card-pool {
+      display: flex;
+      gap: 0.5rem;
+      width: 27rem;
+
+      & > div:nth-child(2) {
+        flex: auto;
+      }
+    }
+
     .sorting-select {
       display: flex;
       gap: 0.5rem;
       width: 27rem;
 
       & > div:nth-child(2) {
-        width: 10.3rem;
+        flex: auto;
       }
       & > div:nth-child(3) {
         width: 9rem;
@@ -34,16 +50,6 @@
 .filter-content-wrapper {
   width: 28rem;
   position: relative;
-
-  .expand-toggle {
-    position: absolute;
-    top: 0;
-    cursor: pointer;
-    display: flex;
-    gap: 0.5rem;
-    font-weight: bold;
-    user-select: none;
-  }
   
   .filter-form-wrapper {
     padding: 1rem 3.2rem 2rem 3.2rem;
@@ -67,4 +73,14 @@
 
 .card-search-filter_expanded {
   left: -25rem !important;
+}
+
+.expand-toggle {
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+  font-weight: bold;
+  user-select: none;
 }

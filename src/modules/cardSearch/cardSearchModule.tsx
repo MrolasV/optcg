@@ -15,31 +15,36 @@ interface CardSearchModuleProps {
   cardPool: Collection;
   workingCardPool: Collection;
   onFilterChange?: (cardFilter: CardFilter) => void;
+  onCardPoolChange?: (cardPoolId: string) => void;
 }
 
 const CardSearchModule = (props: CardSearchModuleProps): JSX.Element => {
-  const { cardPool, workingCardPool, onFilterChange } = props;
+  const { cardPool, workingCardPool, onFilterChange, onCardPoolChange } = props;
 
   const location = useLocation();
   const view: Page = location.pathname.split('/')[1] || Page.collection;
 
   const [ cardFilter, setCardFilter ] = useState<CardFilter>({});
   const [ cardSort, setCardSort ] = useState<CardSort>({
-    orderBy: CardSortOrderBy.DEFAULT,
-    direction: CardSortDirection.DESC,
+    orderBy: view === Page.collection ? CardSortOrderBy.SET : CardSortOrderBy.DEFAULT,
+    direction: view === Page.collection ? CardSortDirection.ASC : CardSortDirection.DESC,
   });
 
   return <div className='card-search-module'>
     <div className='list-wrapper'>
       <CardSearchSort
+        cardSort={cardSort}
+        cardPool={cardPool}
+        useWorkingCardPool={false}
         onSortChange={cardSort => setCardSort(cardSort)}
+        onCardPoolChange={onCardPoolChange}
       />
       <CardSearchList
         cardPool={cardPool}
         workingCardPool={workingCardPool}
         cardSort={cardSort}
         cardFilter={cardFilter}
-        quantityMode={view === Page.collection ? 'show' : 'subtract'}
+        quantityMode={view === Page.collection ? 'workingCount' : 'poolCount'}
       />
     </div>
     <CardSearchFilter

@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
-import { IWithDatabaseHOCProps, useDatabase, withDatabaseHOC } from 'setdb/useDatabase';
+import { Navigate } from 'react-router-dom';
+import { IWithDatabaseHOCProps, withDatabaseHOC } from 'setdb/useDatabase';
 import _ from 'lodash';
 
 import CollectionManagerContainer from './collectionManagerContainer';
@@ -12,9 +12,11 @@ import CollectionContainer from './collectionContainer';
 import { debugTiming, getLocalStorageItem } from 'modules/common/util';
 import { addCardToCollection, collectionToLocalCollection, localCollectionToCollection, removeCardFromCollection } from './util';
 import { CollectionCard, DbCard } from 'setdb/constants';
+import { Page } from 'home/page';
 
 import ContentLayout from '@cloudscape-design/components/content-layout';
 import Header from '@cloudscape-design/components/header';
+import SegmentedControl, { SegmentedControlProps } from '@cloudscape-design/components/segmented-control';
 
 import './styles.scss';
 
@@ -24,6 +26,7 @@ interface ICollectionViewState {
   workingCollection: Collection;
   collectionFilter: CardFilter;
   collectionSort: CardSort;
+  redirect: string;
 }
 
 class CollectionView extends React.Component<ICollectionViewProps, ICollectionViewState> {
@@ -48,7 +51,8 @@ class CollectionView extends React.Component<ICollectionViewProps, ICollectionVi
       collectionSort: {
         orderBy: CardSortOrderBy.SET,
         direction: CardSortDirection.ASC,
-      }
+      },
+      redirect: '',
     }
 
     this.cardDatabaseAsList = Object.values(this.props.cardDatabase).reduce((acc, cardDatabaseSet) => {
@@ -106,6 +110,13 @@ class CollectionView extends React.Component<ICollectionViewProps, ICollectionVi
     })
   };
 
+  redirectToBuilder = () => {
+    this.setState({
+      ...this.state,
+      redirect: Page.builder,
+    })
+  }
+
   renderContent = (): JSX.Element => {
     return <div className='collection_content'>
       <CollectionManagerContainer
@@ -134,9 +145,26 @@ class CollectionView extends React.Component<ICollectionViewProps, ICollectionVi
   }
 
   render () {
+    if (this.state.redirect) {
+      return <Navigate to={`/${this.state.redirect}`} />
+    }
+
+    const pageSegmentOptions: SegmentedControlProps.Option[] = [
+      { id: Page.collection, text: 'Collection manager' },
+      { id: Page.builder, text: 'Deck builder' }
+    ]
+
     return <ContentLayout
       className='collection_content-layout'
-      header={<Header variant='h1' className='collection_content-header'>
+      header={<Header 
+        variant='h1' 
+        className='collection_content-header'
+        actions={<SegmentedControl
+          selectedId={Page.collection}
+          options={pageSegmentOptions}
+          onChange={this.redirectToBuilder}
+        />}
+      >
         Collection manager
       </Header>}
     >

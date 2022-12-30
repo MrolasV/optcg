@@ -8,6 +8,8 @@ import { toggleFilterExpanded } from 'store/cardSearchStore';
 
 import Icon, { IconProps } from '@cloudscape-design/components/icon';
 
+import '../styles.scss';
+
 interface ExpandToggleProps {
   text: string;
   side: 'left' | 'right';

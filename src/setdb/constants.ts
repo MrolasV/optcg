@@ -3,6 +3,9 @@
 //
 // string to enum value
 // Object(ENUM)[str] as ENUM
+//
+// enum value to string
+// Object.values(ENUM)[v]
 
 export enum SetId {
   P,
