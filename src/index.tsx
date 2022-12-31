@@ -8,6 +8,8 @@ import { TooltipProvider } from 'react-tooltip';
 import Tooltip from 'home/tooltip';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { TouchBackend } from 'react-dnd-touch-backend';
+import { isMobile } from 'react-device-detect';
 import { SingletonHooksContainer } from 'react-singleton-hook';
 import '@cloudscape-design/global-styles/index.css';
 import 'react-tooltip/dist/react-tooltip.css';
@@ -16,7 +18,7 @@ import 'modules/common/styles.scss';
 ReactDOM.render(
   <Provider store={store}>
     <HashRouter>
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={isMobile ? TouchBackend : HTML5Backend}>
         <TooltipProvider>
           <SingletonHooksContainer/>
           <App/>
