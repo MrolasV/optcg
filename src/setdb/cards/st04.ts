@@ -226,6 +226,7 @@ export const cardList: DbCard[] = [
     types: [ TypeTags.AnimalKingdomPirates ],
     cost: 4,
     effectText: `[Main] Draw 1 card, then add up to 1 DON!! card from your DON!! deck and set it as active.`,
+    triggerText: `[Trigger] Activate this card's [Main] effect.`,
   },{
     setId: SetId.ST04,
     setNumber: 15,

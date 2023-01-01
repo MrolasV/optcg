@@ -1,6 +1,6 @@
 import { Collection, CollectionInventory, CollectionInventoryItem } from "modules/collection/constants";
 import { cardToCardId, collectionToLocalCollection, localCollectionToCollection } from "modules/collection/util";
-import { CardType, CollectionCard, DbCard, SetId } from "setdb/constants";
+import { ArtVariantImgPostfixes, CardType, CollectionCard, DbCard, SetId } from "setdb/constants";
 import { Deck } from "./constants";
 
 export const deckToCollection = (deck: Deck): Collection => {
@@ -57,6 +57,30 @@ export const deckToTTSString = (deck: Deck): string => {
     const card = cardItem.card;
     const cardString = `${Object.values(SetId)[card.setId]}-${card.setNumber.toString().padStart(3, '0')}`;
     deckList.push(...Array(cardItem.quantity).fill(cardString));
+  })
+  return JSON.stringify(deckList);
+}
+
+export const deckToTTS2String = (deck: Deck, getDbCard: (collectionCard: CollectionCard, useSpecifics?: boolean) => DbCard | undefined): string => {
+  const getCardId = (collectionCard: CollectionCard) => {
+    const setString: string = Object.values(SetId)[collectionCard.setId].toString() || '';
+    const setNumberString: string = collectionCard.setNumber.toString().padStart(3, '0');
+    const variantString: string = collectionCard.hasOwnProperty('artVariant') ? ArtVariantImgPostfixes[collectionCard.artVariant || 0] : '';
+    return `${setString}-${setNumberString}${variantString}`;
+  }
+
+  const deckList = []
+  if (deck.leaderCard) {
+    const leaderCard = getDbCard(deck.leaderCard);
+    if (leaderCard) {
+      deckList.push(`${leaderCard.cardName}|${getCardId(deck.leaderCard!!)}|1|L`);
+    }
+  }
+  deck.mainCards.forEach(cardItem => {
+    const card = getDbCard(cardItem.card, true);
+    if (card) {
+      deckList.push(`${card.cardName}|${getCardId(card)}|${cardItem.quantity}`);
+    }
   })
   return JSON.stringify(deckList);
 }

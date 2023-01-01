@@ -5,7 +5,7 @@ import { TooltipWrapper } from 'react-tooltip';
 import { debugTiming, getLocalStorageItem } from 'modules/common/util';
 import { Deck } from './constants';
 import { lsDeckKey, lsDeckListKey } from 'modules/common/constants';
-import { deckToLocalCollection, deckToTTSString, deckToUntapString, getMainDeckSize, localCollectionToDeck } from './util';
+import { deckToLocalCollection, deckToTTSString, deckToTTS2String, deckToUntapString, getMainDeckSize, localCollectionToDeck } from './util';
 import { localListPush, localListRemove } from 'modules/collection/util';
 import { useDatabase } from 'setdb/useDatabase';
 import { saveAs } from 'file-saver';
@@ -86,6 +86,7 @@ const BuilderManagerContainer = (props: BuilderManagerContainerProps): JSX.Eleme
   const exportItems: ButtonDropdownProps.Item[] = [
     { text: 'To file', id: 'file' },
     { text: 'To clipboard (TTS)', id: 'tts'},
+    { text: 'To clipboard (TTS2)', id: 'tts2' },
     { text: 'To clipboard (untap)', id: 'untap'}
   ]
 
@@ -93,6 +94,7 @@ const BuilderManagerContainer = (props: BuilderManagerContainerProps): JSX.Eleme
     switch (exportId) {
       case 'file': exportToFile(); break;
       case 'tts': exportToClipboard(deckToTTSString(workingDeck)); break;
+      case 'tts2': exportToClipboard(deckToTTS2String(workingDeck, getDbCard)); break;
       case 'untap': exportToClipboard(deckToUntapString(workingDeck, getDbCard)); break;
     }
   }
