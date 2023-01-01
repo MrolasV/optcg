@@ -71,6 +71,7 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
     });
   }
   const localCollectionItems: ButtonDropdownProps.Item[] = getLocalCollectionItems();
+  localCollectionItems.sort((a, b) => a.text.localeCompare(b.text));
 
   const onClear = () => {
     onCollectionLoad({

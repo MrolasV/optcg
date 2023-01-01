@@ -49,6 +49,7 @@ const BuilderManagerContainer = (props: BuilderManagerContainerProps): JSX.Eleme
     });
   }
   const localDeckItems: ButtonDropdownProps.Item[] = getLocalDeckItems();
+  localDeckItems.sort((a, b) => a.text.localeCompare(b.text));
 
   const onClear = () => {
     onDeckLoad({
