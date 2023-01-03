@@ -118,16 +118,18 @@ const BuilderView = (): JSX.Element => {
     if (dbCard.cardType === CardType.LEADER) {
       updatedDeck.leaderCard = collectionCard;
     } else {
-      const deckSize: number = updatedDeck.mainCards.reduce((acc, curr) => {
-        return acc + curr.quantity;
-      }, 0);
-      if (deckSize === 72) {
-        return;
-      }
       const updatedCards = workingDeck.mainCards.concat();
       const itemIndex = updatedCards.findIndex(item => cardToCardId(item.card) === cardToCardId(collectionCard));
       if (itemIndex === -1) {
-        updatedCards.push({ card: collectionCard, quantity: 1 });
+        const invariantCopies = updatedCards.reduce((acc, item) => {
+          if (cardToCardId(item.card, true) === cardToCardId(collectionCard, true)) {
+            return acc + item.quantity;
+          }
+          return acc;
+        }, 0);
+        if (invariantCopies < 4) {
+          updatedCards.push({ card: collectionCard, quantity: 1 });
+        }
       } else {
         const copyMap: {[key: string]: number} = {};
         updatedCards.forEach(cardItem => {
@@ -135,6 +137,7 @@ const BuilderView = (): JSX.Element => {
           const acc = !!copyMap[cardId] ? copyMap[cardId] : 0;
           copyMap[cardId] = acc + cardItem.quantity;
         });
+        console.log(copyMap);
         const updateCardId = cardToCardId(collectionCard, true);
         if (!!copyMap[updateCardId] && copyMap[updateCardId] < 4) {
           updatedCards[itemIndex].quantity++;
@@ -146,6 +149,19 @@ const BuilderView = (): JSX.Element => {
   }
 
   const removeCardFromDeck = (collectionCard: CollectionCard) => {
+    const tooltip = document.querySelector('.optcg-tooltip');
+    if (!!tooltip) {
+      let showClass = '';
+      tooltip.classList.forEach(className => {
+        if (className.includes('module_show')) {
+          showClass = className;
+        }
+      });
+      if (!!showClass) {
+        tooltip.classList.remove(showClass);
+      }
+    }
+
     const cardId = cardToCardId(collectionCard);
     const updatedDeck: Deck = JSON.parse(JSON.stringify(workingDeck));
     if (workingDeck.leaderCard && cardId === cardToCardId(workingDeck.leaderCard)) {

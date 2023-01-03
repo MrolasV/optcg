@@ -151,8 +151,7 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
     </>
   }
 
-  const columns = deckSize <= 50 ? 10 : 12;
-  const rows = deckSize <= 50 ? 5 : 6;
+  const rows = Math.ceil(deckSize / 10);
 
   return <Container className='builder-container'>
     <div className='builder-grid-wrapper' ref={dropRef}>
@@ -177,8 +176,7 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
             </div>
             <div className='builder-main-deck'
               style={{
-                gridTemplateColumns: `repeat(${columns}, calc((100% - ${((columns - 1) * 0.5).toFixed(1)}rem) / ${columns}))`,
-                gridTemplateRows: `repeat(${rows}, calc((100% - ${((rows - 1) * 0.5).toFixed(1)}rem) / ${rows}))`,
+                gridTemplateRows: `repeat(${rows}, calc((100% - 2rem) / 5))`,
               }}
             >
               {renderMainDeck()}

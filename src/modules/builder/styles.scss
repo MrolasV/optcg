@@ -241,9 +241,10 @@
         border: 2px solid awsui.$color-border-button-normal-disabled;
         border-radius: 8px !important;
         display: grid;
-        grid-template-columns: repeat(12, calc((100% - 5.5rem) / 12));
+        grid-template-columns: repeat(10, calc((100% - 4.5rem) / 10));
         grid-gap: 0.5rem;
-        grid-template-rows: repeat(6, calc((100% - 2.5rem) / 6));
+        grid-template-rows: repeat(5, calc((100% - 2rem) / 5));
+        overflow-y: auto;
         
         & > span {
           height: 100%;
