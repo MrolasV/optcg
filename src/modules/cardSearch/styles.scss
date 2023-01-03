@@ -50,14 +50,16 @@
 .filter-content-wrapper {
   width: 28rem;
   position: relative;
+  height: calc(100vh - 8.8rem);
   
   .filter-form-wrapper {
-    padding: 1rem 3.2rem 2rem 3.2rem;
+    padding: 1rem 3.2rem 0 3.2rem;
+    height: calc(100% - 4rem);
+    overflow-y: auto;
 
     .filter-form-collection-contains-wrapper {
-      display: flex;
-      justify-content: space-between;
       height: 2.2rem;
+      position: relative;
 
       & > span {
         font-weight: 700;
@@ -66,6 +68,28 @@
       & > div {
         transform: scale(calc(22 / 30));
         transform-origin: 100% 0;
+      }
+    }
+
+    & ul[aria-labelledby~="hide-group-select"] {
+      & li:not([data-group-index]) {
+        pointer-events: none !important;
+
+        & > div:first-child div {
+          position: relative;
+
+          & > div {
+            position: absolute !important;
+            left: 0;
+            top: 0;
+          }
+
+          & > div:first-child {
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+          }
+        }
       }
     }
   }

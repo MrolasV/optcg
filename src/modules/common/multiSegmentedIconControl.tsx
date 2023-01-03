@@ -36,7 +36,7 @@ const MultiSegmentedIconControl = (props: MultiSegmentedControlProps): JSX.Eleme
   }, [ selectedIds, options ])
 
   return <SegmentedControl
-    className={`multi-segmented-control-${componentId.current.substring(0, 8)}`}
+    className={`multi-segmented-control multi-segmented-control-${componentId.current.substring(0, 8)}`}
     selectedId={''}
     options={options}
     onChange={({ detail }) => {

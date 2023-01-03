@@ -5,6 +5,7 @@
     display: flex;
     justify-content: space-between;
     height: 2.2rem;
+    position: relative;
 
     label {
       font-weight: 700;
@@ -13,12 +14,20 @@
     & > div {
       transform: scale(calc(22 / 30));
       transform-origin: 100% 0;
+      position: absolute;
+      right: 0;
     }
   }
 
   .form-field-with-segments_children-wrapper {
     padding-top: 0.4rem;
   }
+}
+
+.multi-segmented-control {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .multi-segmented-control_selected {
@@ -104,10 +113,15 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      margin-top: auto;
     }
 
     & > div:nth-child(2) {
       flex: none;
+
+      & > div {
+        text-align: end;
+      }
     }
   }
 }
@@ -184,6 +198,7 @@
     .card-summary_bottom-row {
       font-size: 1.2rem;
       line-height: 1.6rem;
+      position: relative;
 
       & > div:nth-child(1) {
         display: flex;
@@ -213,6 +228,12 @@
             padding-bottom: 0.6rem !important;
           }
         }
+      }
+
+      .card-summary_rarity {
+        position: absolute;
+        right: 0;
+        bottom: 1.4rem;
       }
     }
   }

@@ -19,6 +19,8 @@ export interface CardFilter {
   counterCompareMode?: string,
   attribute?: CardAttribute,
   effectText?: string,
+  effectTags?: string[],
+  effectTagsUnionOption?: string,
   hasTrigger?: boolean,
   triggerText?: string,
   rarity?: CardRarity,

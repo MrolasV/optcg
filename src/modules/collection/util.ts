@@ -1,7 +1,7 @@
 import { CardFilter, CardSort, CardSortDirection, CardSortOrderBy } from "modules/common/constants";
 import { getLocalStorageItem } from "modules/common/util";
-import { ArtVariant, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, SetId } from "setdb/constants";
-import { Collection, CollectionInventory, CollectionInventoryItem } from "./constants";
+import { ArtVariant, CardType, CollectionCard, DbCard, DbCharacterCard, DbLeaderCard, EffectTag, SetId } from "setdb/constants";
+import { Collection, CollectionInventory, CollectionInventoryItem, filterEffectTagsSearchTerms } from "./constants";
 
 export const cardToCardId = (card: DbCard | CollectionCard, ignoreVariant?: boolean): string => {
   return `${card.setId}-${card.setNumber}-${!ignoreVariant && card.hasOwnProperty('artVariant') ? card.artVariant : ''}`;
@@ -80,6 +80,27 @@ export const filterCollectionInventory = (
         }
       }
       if (cardFilter.typeTagsUnionOption === 'or' && !orFlag) {
+        return false;
+      }
+    }
+    if (cardFilter.effectTags && (cardFilter.effectTagsUnionOption !== 'or' || cardFilter.effectTags.length)) {
+      if (!card.effectText) {
+        return false;
+      }
+      let orFlag = false;
+      for (const effectTag of cardFilter.effectTags) {
+        const searchTerm: RegExp | undefined = filterEffectTagsSearchTerms.get(effectTag as EffectTag);
+        if (!searchTerm) {
+          continue;
+        }
+        if (cardFilter.effectTagsUnionOption === 'and' && !searchTerm.test(card.effectText)) {
+          return false;
+        }
+        if (searchTerm.test(card.effectText)) {
+          orFlag = true;
+        }
+      }
+      if (cardFilter.effectTagsUnionOption === 'or' && !orFlag) {
         return false;
       }
     }

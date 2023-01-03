@@ -44,6 +44,9 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
       deckInvariantCopies[cardIdInvariant] + cardItem.quantity : 
       cardItem.quantity;
   });
+  const deckSize: number = workingDeck.mainCards.reduce((acc, curr) => {
+    return acc + curr.quantity;
+  }, 0);
 
   const [ , dropRef ] = useDrop(() => {
     return {
@@ -64,11 +67,11 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
     if (!workingDeck.leaderCard) {
       return DeckIllegalReason.MISSING_LEADER;
     }
-    const deckSize: number = workingDeck.mainCards.reduce((acc, curr) => {
-      return acc + curr.quantity;
-    }, 0);
     if (deckSize < 50) {
       return DeckIllegalReason.MISSING_CARDS;
+    }
+    if (deckSize > 50) {
+      return DeckIllegalReason.OVER_CARDS;
     }
     const deckOverCopies: boolean = Object.values(deckInvariantCopies).reduce((acc, curr) => {
       return acc || curr > 4;
@@ -148,6 +151,9 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
     </>
   }
 
+  const columns = deckSize <= 50 ? 10 : 12;
+  const rows = deckSize <= 50 ? 5 : 6;
+
   return <Container className='builder-container'>
     <div className='builder-grid-wrapper' ref={dropRef}>
       <Alert type={!!deckIllegalReason ? 'error' : (!!deckWarningReason ? 'warning' : 'success')}>
@@ -169,7 +175,12 @@ const BuilderContainer = (props: BuilderContainerProps): JSX.Element => {
             <div className='builder-main-deck_text'>
               MAIN DECK
             </div>
-            <div className='builder-main-deck'>
+            <div className='builder-main-deck'
+              style={{
+                gridTemplateColumns: `repeat(${columns}, calc((100% - ${((columns - 1) * 0.5).toFixed(1)}rem) / ${columns}))`,
+                gridTemplateRows: `repeat(${rows}, calc((100% - ${((rows - 1) * 0.5).toFixed(1)}rem) / ${rows}))`,
+              }}
+            >
               {renderMainDeck()}
             </div>
           </div>

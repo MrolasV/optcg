@@ -10,6 +10,7 @@ export interface Deck {
 export enum DeckIllegalReason {
   MISSING_LEADER = 'Deck is missing a leader.',
   MISSING_CARDS = 'Deck does not contain 50 main deck cards.',
+  OVER_CARDS = 'Deck has more than 50 main deck cards.',
   OVER_COPIES = 'Deck contains more than 4 copies of a card.',
   COLOR_MISMATCH = 'Deck contains main deck cards with a color not matching the leader.',
 }

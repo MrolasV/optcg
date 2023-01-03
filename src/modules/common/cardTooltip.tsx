@@ -4,7 +4,7 @@ import ReactDOMServer from 'react-dom/server';
 
 import Tooltip from 'home/tooltip';
 import { TooltipWrapper, PlacesType } from 'react-tooltip';
-import { ArtVariantCodes, CardAttribute, CardColorHexCodes, CardType, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
+import { ArtVariantCodes, CardAttribute, CardColorHexCodes, CardRarity, CardType, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import { capitalizeFirst } from './util';
 
 interface CardTooltipProps {
@@ -82,7 +82,10 @@ const CardTooltip = (props: CardTooltipProps): JSX.Element => {
         </div>
         <div className='card-tooltip_footer'>
           <div>{card.artist ? <><strong>Artist: </strong>{card.artist}</> : ''}</div>
-          <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
+          <div>
+            <div>{capitalizeFirst(Object.values(CardRarity)[card.rarity] as string).replace('_', ' ')}</div>
+            <div>{`${setCode}-${card.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
+          </div>
         </div>
       </div>
     </div>

@@ -121,7 +121,7 @@ const BuilderView = (): JSX.Element => {
       const deckSize: number = updatedDeck.mainCards.reduce((acc, curr) => {
         return acc + curr.quantity;
       }, 0);
-      if (deckSize === 50) {
+      if (deckSize === 72) {
         return;
       }
       const updatedCards = workingDeck.mainCards.concat();

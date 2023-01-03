@@ -5,7 +5,7 @@ import { CardFilter } from 'modules/common/constants';
 import ExpandToggle from './expandToggle';
 import FormFieldWithSegments from 'modules/common/formFieldWithSegments';
 import MultiSegmentedIconControl from 'modules/common/multiSegmentedIconControl';
-import { ArtVariant, CardAttribute, CardColor, CardRarity, CardType, SetId, SetNames, TypesList } from 'setdb/constants';
+import { ArtVariant, CardAttribute, CardColor, CardRarity, CardType, EffectTagGroups, EffectTagList, SetId, SetNames, TypesList } from 'setdb/constants';
 import { capitalizeFirst } from 'modules/common/util';
 import { useDatabase } from 'setdb/useDatabase';
 
@@ -40,6 +40,9 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const [ cardColorsUnionOption, setCardColorsUnionOption ] = useState<string>('and');
   const [ typeTags, setTypeTags ] = useState<string[]>([]);
   const [ typeTagsUnionOption, setTypeTagsUnionOption ] = useState<string>('and');
+  const [ effectText, setEffectText ] = useState<string>('');
+  const [ effectTags, setEffectTags ] = useState<string[]>([]);
+  const [ effectTagsUnionOption, setEffectTagsUnionOption ] = useState<string>('and');
 
   const [ life, setLife ] = useState<string>('');
   const [ lifeCompareMode, setLifeCompareMode ] = useState<string>('=');
@@ -50,7 +53,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const [ counter, setCounter ] = useState<string>('');
   const [ counterCompareMode, setCounterCompareMode ] = useState<string>('=');
   const [ attribute, setAttribute ] = useState<string>('All');
-  const [ effectText, setEffectText ] = useState<string>('');
   const [ hasTrigger, setHasTrigger ] = useState<boolean>(false);
   const [ triggerText, setTriggerText ] = useState<string>('');
   const [ inCollectionOptions, setInCollectionOptions ] = useState<string[]>(['in', 'out']);
@@ -99,6 +101,8 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     if (!!effectText) {
       cardFilter.effectText = effectText.toLowerCase();
     }
+    cardFilter.effectTags = effectTags;
+    cardFilter.effectTagsUnionOption = effectTagsUnionOption;
     if (hasTrigger) {
       cardFilter.hasTrigger = true;
       if (!!triggerText) {
@@ -124,7 +128,8 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   }, [
     cardName, cardSet, cardType, cardColors, cardColorsUnionOption, typeTags, typeTagsUnionOption,
     life, lifeCompareMode, power, powerCompareMode, cost, costCompareMode, counter, counterCompareMode,
-    attribute, effectText, hasTrigger, triggerText, rarity, artVariant, artist, inCollectionOptions
+    attribute, effectText, hasTrigger, triggerText, rarity, artVariant, artist, inCollectionOptions,
+    effectTags, effectTagsUnionOption,
   ]);
 
   const resetNonGenericFields = () => {
@@ -137,7 +142,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     setCounter('');
     setCounterCompareMode('=');
     setAttribute('All');
-    setEffectText('');
     setHasTrigger(false);
     setTriggerText('');
   }
@@ -153,7 +157,19 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       <Input 
         value={power}
         type='number'
-        onChange={({ detail }) => setPower(detail.value)}
+        onChange={({ detail }) => {
+          const powerNum = Number(detail.value);
+          if (powerNum === Number.NaN) {
+            setPower(detail.value);
+            return;
+          }
+          if (powerNum < 0) {
+            setPower('');
+            return;
+          }
+          setPower(detail.value);
+        }}
+        step={1000}
       />
     </FormFieldWithSegments>
   }
@@ -177,15 +193,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     </FormField>
   }
 
-  const renderEffectTextField = (): JSX.Element => {
-    return <FormField label='Effect' >
-      <Input
-        value={effectText}
-        onChange={({ detail }) => setEffectText(detail.value)}
-      />
-    </FormField>
-  }
-
   const renderCostField = (): JSX.Element => {
     return <FormFieldWithSegments label='Cost'
       segmentOptions={['=', '>=', '<=']}
@@ -195,7 +202,14 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       <Input 
         value={cost}
         type='number'
-        onChange={({ detail }) => setCost(detail.value)}
+        onChange={({ detail }) => {
+          const costNum = Number(detail.value);
+          if (costNum === Number.NaN) {
+            setCost(detail.value);
+            return;
+          }
+          setCost(costNum ? detail.value : '');
+        }}
       />
     </FormFieldWithSegments>
   }
@@ -256,6 +270,24 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
     });
     const selectedTypes: MultiselectProps.Option[] = typeOptions.filter(option => typeTags.includes(option.value || ''));
 
+    const effectTagOptions: MultiselectProps.Options = Object.entries(EffectTagGroups).map(([ group, tags ]) => {
+      return {
+        label: group,
+        options: tags.map(tag => {
+          return {
+            label: tag,
+            value: tag,
+          }
+        })
+      }
+    });
+    const selectedEffectTags: MultiselectProps.Option[] = effectTagOptions.reduce((acc, curr) => {
+      const group = curr as MultiselectProps.OptionGroup;
+      const selectedGroupOptions = group.options.filter(option => effectTags.includes(option.value || ''));
+      acc.push(...selectedGroupOptions)
+      return acc;
+    }, [] as MultiselectProps.Option[])
+
     return <>
       {/* Generic */}
       {/* Name: input */}
@@ -313,6 +345,27 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
           onChange={({ detail }) => setTypeTags(detail.selectedOptions.map(option => option.value || '')) }
         />
       </FormFieldWithSegments>
+      <FormField label='Effect text' >
+        <Input
+          value={effectText}
+          onChange={({ detail }) => setEffectText(detail.value)}
+        />
+      </FormField>
+      <FormFieldWithSegments label='Effect tags' 
+        segmentOptions={['and', 'or']}
+        currentSegmentOption={effectTagsUnionOption}
+        onSegmentOptionChange={(segmentOption: string) => setEffectTagsUnionOption(segmentOption)}
+      >
+        <Multiselect
+          controlId='hide-group-select'
+          selectedOptions={selectedEffectTags}
+          options={effectTagOptions}
+          filteringType='auto'
+          onChange={({ detail }) => {
+            setEffectTags(detail.selectedOptions.map(option => option.value || '')) 
+          }}
+        />
+      </FormFieldWithSegments>
     </>
   }
 
@@ -337,7 +390,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       </FormFieldWithSegments>
       {renderPowerField()}
       {renderAttributeField()}
-      {renderEffectTextField()}
     </>
   }
 
@@ -363,10 +415,17 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
         <Input
           value={counter}
           type='number'
-          onChange={({ detail }) => setCounter(detail.value)}
+          onChange={({ detail }) => {
+            const counterNum = Number(detail.value);
+            if (counterNum === Number.NaN) {
+              setCounter(detail.value);
+              return;
+            }
+            setCounter(counterNum ? detail.value : '');
+          }}
+          step={1000}
         />
       </FormFieldWithSegments>
-      {renderEffectTextField()}
       {renderTriggerField()}
     </>
   }
@@ -380,7 +439,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       {/* Trigger text: input */}
 
       {renderCostField()}
-      {renderEffectTextField()}
       {renderTriggerField()}
     </>
   }
@@ -392,7 +450,6 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       {/* Effect text: input */}
 
       {renderCostField()}
-      {renderEffectTextField()}
     </>
   }
 

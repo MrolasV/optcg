@@ -126,6 +126,61 @@ export enum TypeTags {
 }
 export const TypesList: string[] = Object.values(TypeTags);
 
+export enum EffectTag {
+  // Condition
+  DON_ATTACH = 'DON!! xX',
+  ONCE_PER_TURN = 'Once Per Turn',
+  YOUR_TURN = 'Your Turn',
+  OPPONENTS_TURN = `Opponent's Turn`,
+
+  // Trigger
+  ACTIVATE_MAIN = 'Activate: Main',
+  END_OF_TURN = 'End of Turn',
+  ON_PLAY = 'On Play',
+  WHEN_ATTACKING = 'When Attacking',
+  ON_BLOCK = 'On Block',
+  EVENT_MAIN = 'Main',
+  EVENT_COUNTER = 'Counter',
+
+  // Cost
+  DON_MINUS = 'DON!! -X',
+  DON_ACTIVATE = 'DON!! ⓧ',
+
+  // Effect
+  BLOCKER = 'Blocker',
+  RUSH = 'Rush',
+  BANISH = 'Banish',
+  DOUBLE_ATTACK = 'Double Attack',
+}
+export const EffectTagList: string[] = Object.values(EffectTag);
+export const EffectTagGroups: {[group: string]: EffectTag[]} = {
+  'Condition': [
+    EffectTag.DON_ATTACH,
+    EffectTag.ONCE_PER_TURN,
+    EffectTag.YOUR_TURN,
+    EffectTag.OPPONENTS_TURN,
+  ],
+  'Trigger': [
+    EffectTag.ACTIVATE_MAIN,
+    EffectTag.END_OF_TURN,
+    EffectTag.ON_PLAY,
+    EffectTag.WHEN_ATTACKING,
+    EffectTag.ON_BLOCK,
+    EffectTag.EVENT_MAIN,
+    EffectTag.EVENT_COUNTER,
+  ],
+  'Cost': [
+    EffectTag.DON_MINUS,
+    EffectTag.DON_ACTIVATE,
+  ],
+  'Effect': [
+    EffectTag.BLOCKER,
+    EffectTag.RUSH,
+    EffectTag.BANISH,
+    EffectTag.DOUBLE_ATTACK,
+  ],
+}
+
 export interface CollectionCard {
   setId: SetId;
   setNumber: number;

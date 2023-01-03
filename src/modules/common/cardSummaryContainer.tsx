@@ -2,7 +2,7 @@ import * as React from 'react';
 import { memo } from 'react';
 import { useDrag } from 'react-dnd';
 
-import { ArtVariantCodes, CardColorHexCodes, CardType, CollectionCard, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
+import { ArtVariantCodes, CardColorHexCodes, CardRarity, CardType, CollectionCard, DbCard, dbCardImgLink, DbCharacterCard, DbLeaderCard, SetId } from 'setdb/constants';
 import CardTooltip from 'modules/common/cardTooltip';
 import { useDatabase } from 'setdb/useDatabase';
 
@@ -10,6 +10,7 @@ import Container from '@cloudscape-design/components/container';
 import SegmentedControl, { SegmentedControlProps } from '@cloudscape-design/components/segmented-control';
 
 import './styles.scss';
+import { capitalizeFirst } from './util';
 
 interface CardSummaryContainerProps {
   card: CollectionCard;
@@ -117,6 +118,7 @@ const CardSummaryContainer = (props: CardSummaryContainerProps): JSX.Element => 
                 />}
               </div>
               <div>{`${setCode}-${dbCard.setNumber.toString().padStart(3, '0')} ${variantString}`}</div>
+              <div className='card-summary_rarity'>{capitalizeFirst(Object.values(CardRarity)[dbCard.rarity] as string).replace('_', ' ')}</div>
             </div>
         </div>
         </div>}
