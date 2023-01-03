@@ -83,7 +83,7 @@ export const filterCollectionInventory = (
         return false;
       }
     }
-    if (cardFilter.effectTags && (cardFilter.effectTagsUnionOption !== 'or' || cardFilter.effectTags.length)) {
+    if (cardFilter.effectTags && cardFilter.effectTags.length && (cardFilter.effectTagsUnionOption !== 'or' || cardFilter.effectTags.length)) {
       if (!card.effectText) {
         return false;
       }
