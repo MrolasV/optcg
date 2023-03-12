@@ -14,6 +14,9 @@ export enum SetId {
   ST03,
   ST04,
   OP01,
+  ST05,
+  ST06,
+  OP02,
 }
 export const SetNames: {[key: string]: string} = {
   'P': 'Promotional',
@@ -22,6 +25,9 @@ export const SetNames: {[key: string]: string} = {
   'ST03': 'Starter deck-The Seven Warlords of the Sea',
   'ST04': 'Starter deck-Animal Kingdom Pirates',
   'OP01': 'Romance Dawn',
+  'ST05': 'Starter deck-ONE PIECE FILM edition',
+  'ST06': 'Starter deck-Absolute Justice',
+  'OP02': 'Paramount War',
 }
 
 export enum CardType {
@@ -123,6 +129,19 @@ export enum TypeTags {
   BlackbeardPirates = 'Blackbeard Pirates',
   JellyfishPirates = 'Jellyfish Pirates',
   WhitebeardPirates = 'Whitebeard Pirates',
+  NeoNavy = 'Neo Navy',
+  ThePiratesFest = 'The Pirates Fest',
+  Grantesoro = 'Grantesoro',
+  GoldenLionPirates = 'Golden Lion Pirates',
+  MountainBandits = 'Mountain Bandits',
+  WhitebeardPiratesAllies = 'Whitebeard Pirates Allies',
+  WindmillVillage = 'Windmill Village',
+  SpadePirates = 'Spade Pirates',
+  ImpelDown = 'Impel Down',
+  FormerBaroqueWorks = 'Former Baroque Works',
+  WorldPirates = 'World Pirates',
+  JailerBeast = 'Jailer Beast',
+  FormerNavy = 'Former Navy',
 }
 export const TypesList: string[] = Object.values(TypeTags);
 
@@ -151,6 +170,7 @@ export enum EffectTag {
   RUSH = 'Rush',
   BANISH = 'Banish',
   DOUBLE_ATTACK = 'Double Attack',
+  REDUCE_COST = 'Reduce Cost',
 }
 export const EffectTagList: string[] = Object.values(EffectTag);
 export const EffectTagGroups: {[group: string]: EffectTag[]} = {
@@ -178,6 +198,7 @@ export const EffectTagGroups: {[group: string]: EffectTag[]} = {
     EffectTag.RUSH,
     EffectTag.BANISH,
     EffectTag.DOUBLE_ATTACK,
+    EffectTag.REDUCE_COST,
   ],
 }
 

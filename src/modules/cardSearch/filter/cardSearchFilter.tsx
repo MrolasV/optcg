@@ -37,12 +37,12 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
   const [ cardSet, setCardSet ] = useState<string>('All');
   const [ cardType, setCardType ] = useState<string>('All');
   const [ cardColors, setCardColors ] = useState<CardColor[]>([]);
-  const [ cardColorsUnionOption, setCardColorsUnionOption ] = useState<string>('and');
+  const [ cardColorsUnionOption, setCardColorsUnionOption ] = useState<string>('or');
   const [ typeTags, setTypeTags ] = useState<string[]>([]);
-  const [ typeTagsUnionOption, setTypeTagsUnionOption ] = useState<string>('and');
+  const [ typeTagsUnionOption, setTypeTagsUnionOption ] = useState<string>('or');
   const [ effectText, setEffectText ] = useState<string>('');
   const [ effectTags, setEffectTags ] = useState<string[]>([]);
-  const [ effectTagsUnionOption, setEffectTagsUnionOption ] = useState<string>('and');
+  const [ effectTagsUnionOption, setEffectTagsUnionOption ] = useState<string>('or');
 
   const [ life, setLife ] = useState<string>('');
   const [ lifeCompareMode, setLifeCompareMode ] = useState<string>('=');
@@ -188,7 +188,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
       <Select
         selectedOption={selectedAttributeOption}
         options={attributeOptions}
-        onChange={({ detail }) => setCardSet(detail.selectedOption.value || 'All')}
+        onChange={({ detail }) => setAttribute(detail.selectedOption.value || 'All')}
       />
     </FormField>
   }
@@ -239,7 +239,7 @@ const CardSearchFilter = (props: CardSearchFilterProps): JSX.Element => {
         label: `${setNameEntry[0]}: ${setNameEntry[1]}`,
         value: setNameEntry[0],
       }
-    });
+    }).sort((a, b) => a.value.localeCompare(b.value));
     setOptions.splice(0, 0, { label: 'All', value: 'All' });
     const selectedSetOption: SelectProps.Option = setOptions.find(setOption => setOption.value === cardSet) || {};
 

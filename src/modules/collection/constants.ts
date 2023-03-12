@@ -36,4 +36,5 @@ export const filterEffectTagsSearchTerms: Map<EffectTag, RegExp> = new Map<Effec
   [EffectTag.RUSH, /\(This card can attack on the turn in which it is played\.\)/i],
   [EffectTag.BANISH, /\(When this card deals damage, the target card is trashed without activating its Trigger\.\)/i],
   [EffectTag.DOUBLE_ATTACK, /\(This card deals 2 damage\.\)/i],
+  [EffectTag.REDUCE_COST, /-\d+ cost/i],
 ]);
