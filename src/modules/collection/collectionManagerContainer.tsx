@@ -172,7 +172,7 @@ const CollectionManagerContainer = (props: CollectionManagerContainerProps): JSX
             disabled={!localCollectionItems.length}
           >Load</ButtonDropdown>
           <ButtonDropdown
-            items={getLocalCollectionItems()} 
+            items={localCollectionItems} 
             onItemClick={({detail}) => onDeleteAction(detail.id)}
             disabled={!localCollectionItems.length}
           >Delete</ButtonDropdown>
