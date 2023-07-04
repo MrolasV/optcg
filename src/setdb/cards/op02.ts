@@ -611,7 +611,7 @@ export const cardList: DbCard[] = [
     cardColors: [ CardColor.GREEN ],
     rarity: CardRarity.RARE,
     artVariants: [ ArtVariant.PARALLEL ],
-    artists: [ 'Anime', 'Makatoshi' ],
+    artists: [ 'Anime', 'Makitoshi' ],
     blockIcon: 1,
     types: [ TypeTags.FILM, TypeTags.Supernovas, TypeTags.StrawHatCrew ],
     cost: 7,

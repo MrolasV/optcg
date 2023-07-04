@@ -17,6 +17,8 @@ export enum SetId {
   ST05,
   ST06,
   OP02,
+  OP03,
+  ST07,
 }
 export const SetNames: {[key: string]: string} = {
   'P': 'Promotional',
@@ -28,6 +30,8 @@ export const SetNames: {[key: string]: string} = {
   'ST05': 'Starter deck-ONE PIECE FILM edition',
   'ST06': 'Starter deck-Absolute Justice',
   'OP02': 'Paramount War',
+  'OP03': 'Pillars of Strength',
+  'ST07': 'Starter deck-Big Mom Pirates',
 }
 
 export enum CardType {
@@ -43,9 +47,10 @@ export enum CardColor {
   BLUE,
   PURPLE,
   BLACK,
+  YELLOW,
 }
 export const CardColorHexCodes: string[] = [
-  'd6141d', '00946b', '0085c2', '94398b', '000000',
+  'd6141d', '00946b', '0085c2', '94398b', '000000', 'f6e649',
 ];
 
 export enum CardRarity {
@@ -142,6 +147,22 @@ export enum TypeTags {
   WorldPirates = 'World Pirates',
   JailerBeast = 'Jailer Beast',
   FormerNavy = 'Former Navy',
+  ODYSSEY = 'ODYSSEY',
+  EastBlue = 'East Blue',
+  BlackCatPirates = 'Black Cat Pirates',
+  AlvidaPirates = 'Alvida Pirates',
+  WaterSeven = 'Water Seven',
+  GalleyLa = 'Galley-La Company',
+  TheFrankyFamily = 'The Franky Family',
+  Merfolk = 'Merfolk',
+  CP9 = 'CP9',
+  WorldGovernment = 'World Government',
+  CP6 = 'CP6',
+  CP7 = 'CP7',
+  BigMomPirates = 'Big Mom Pirates',
+  Homies = 'Homies',
+  TheVinsmokeFamily = 'The Vinsmoke Family',
+  SniperIsland = 'Sniper Island',
 }
 export const TypesList: string[] = Object.values(TypeTags);
 
