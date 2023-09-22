@@ -137,7 +137,7 @@ export const cardList: DbCard[] = [
     cardColors: [ CardColor.RED ],
     rarity: CardRarity.UNCOMMON,
     artVariants: [ ArtVariant.BOX_TOPPER ],
-    artists: [ 'Hayaken-serena', 'Hayaken-serena' ],
+    artists: [ 'Hayaken-sarena', 'Hayaken-sarena' ],
     blockIcon: 1,
     types: [ TypeTags.WhitebeardPiratesAllies ],
     cost: 3,

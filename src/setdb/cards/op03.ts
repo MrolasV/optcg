@@ -1538,7 +1538,7 @@ export const cardList: DbCard[] = [
   },{
     setId: SetId.OP03,
     setNumber: 105,
-    cardName: 'Shirley',
+    cardName: 'Charlotte Oven',
     cardType: CardType.CHARACTER,
     cardColors: [ CardColor.YELLOW ],
     rarity: CardRarity.UNCOMMON,
@@ -1660,7 +1660,7 @@ export const cardList: DbCard[] = [
   },{
     setId: SetId.OP03,
     setNumber: 113,
-    cardName: 'Charlotte Pudding',
+    cardName: 'Charlotte Perospero',
     cardType: CardType.CHARACTER,
     cardColors: [ CardColor.YELLOW ],
     rarity: CardRarity.SUPER_RARE,
