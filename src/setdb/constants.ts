@@ -22,6 +22,8 @@ export enum SetId {
   ST08,
   ST09,
   OP04,
+  ST10,
+  OP05,
 }
 export const SetNames: {[key: string]: string} = {
   'P': 'Promotional',
@@ -37,7 +39,9 @@ export const SetNames: {[key: string]: string} = {
   'ST07': 'Starter deck-Big Mom Pirates',
   'ST08': 'Starter deck-Monkey D. Luffy',
   'ST09': 'Starter deck-Yamato',
-  'OP04': 'Kingdoms of Intrigue'
+  'OP04': 'Kingdoms of Intrigue',
+  'ST10': 'Ultra deck-The Three Captains',
+  'OP05': 'Awakening of the New Era',
 }
 
 export enum CardType {
@@ -174,7 +178,15 @@ export enum TypeTags {
   CP0 = 'CP0',
   TheTontattas = 'The Tontattas',
   TheHouseOfLambs = 'The House of Lambs',
-  WholeCakeIsland = 'Whole Cake Island'
+  WholeCakeIsland = 'Whole Cake Island',
+  BellamyPirates = 'Bellamy Pirates',
+  KingdomOfProdence = 'Kingdom of Prodence',
+  GoaKingdom = 'Goa Kingdom',
+  CelestialDragons = 'Celestial Dragons',
+  MaryGeoise = 'Mary Geoise',
+  SkyIsland = 'Sky Island',
+  Vassals = 'Vassals',
+  TheMoon = 'The Moon',
 }
 export const TypesList: string[] = Object.values(TypeTags);
 

@@ -565,7 +565,7 @@ export const cardList: DbCard[] = [
     artists: [ 'Manga' ],
     blockIcon: 1,
     types: [ TypeTags.TheSevenWarlordsOfTheSea, TypeTags.DonquixotePirates ],
-    cost: 2,
+    cost: 5,
     effectText: `[Main]/[Counter] Rest up to 1 of your opponent's Leader or Character cards. Then, K.O. up to 1 of your opponent's rested Characters with a cost of 6 or less.`,
     triggerText: `[Trigger] Set up to 5 of your DON!! cards as active.`,
   },{
