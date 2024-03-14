@@ -24,6 +24,9 @@ export enum SetId {
   OP04,
   ST10,
   OP05,
+  ST11,
+  OP06,
+  ST12,
 }
 export const SetNames: {[key: string]: string} = {
   'P': 'Promotional',
@@ -42,6 +45,9 @@ export const SetNames: {[key: string]: string} = {
   'OP04': 'Kingdoms of Intrigue',
   'ST10': 'Ultra deck-The Three Captains',
   'OP05': 'Awakening of the New Era',
+  'ST11': 'Starter deck-Uta',
+  'OP06': 'Wings of the Captain',
+  'ST12': 'Starter deck-Zoro and Sanji',
 }
 
 export enum CardType {
@@ -187,6 +193,28 @@ export enum TypeTags {
   SkyIsland = 'Sky Island',
   Vassals = 'Vassals',
   TheMoon = 'The Moon',
+  Music = 'Music',
+  FrostMoonVillage = 'Frost Moon Village',
+  MuggyKingdom = 'MuggyKingdom',
+  FlyingFishPirates = 'The Flying Fish Pirates',
+  OmatsuriIsland = 'Omatsuri Island',
+  GaspardePirates = 'Gasparde Pirates',
+  AsukaIsland = 'Asuka Island',
+  MugiwaraChase = 'Mugiwara Chase',
+  ShipbuildingTown = 'Shipbuilding Town',
+  TrumpPirates = 'Trump Pirates',
+  MechaIsland = 'Mecha Island',
+  NewFishmanPirates = 'New Fish-Man Pirates',
+  GyroPirates = 'Gyro Pirates',
+  FormerArlongPirates = 'Former Arlong Pirates',
+  FlyingPirates = 'Flying Pirates',
+  FishManIsland = 'Fish-Man Island',
+  GERMA66 = 'GERMA 66',
+  KingdomOfGerma = 'Kingdom of GERMA',
+  EldoraggoCrew = 'Eldoraggo Crew',
+  CrownIsland = 'Crown Island',
+  FormerRumbarPirates = 'Former Rumbar Pirates',
+  ShandianWarrior = 'Shandian Warrior',
 }
 export const TypesList: string[] = Object.values(TypeTags);
 

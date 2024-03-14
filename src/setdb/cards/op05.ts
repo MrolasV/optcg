@@ -521,7 +521,7 @@ export const cardList: DbCard[] = [
   },{
     setId: SetId.OP05,
     setNumber: 35,
-    cardName: 'Baby 5',
+    cardName: 'Bellamy',
     cardType: CardType.CHARACTER,
     cardColors: [ CardColor.GREEN ],
     rarity: CardRarity.COMMON,

@@ -1135,7 +1135,7 @@ export const cardList: DbCard[] = [
     artists: [ 'Manga' ],
     blockIcon: 1,
     types: [ TypeTags.BaroqueWorks ],
-    cost: 1,
+    cost: 3,
     effectText: `[Counter] Up to 1 of your Leader or Character cards gains +6000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 DON!! card from your DON!! deck and rest it.`,
     triggerText: `[Trigger] Add up to 1 DON!! card from your DON!! deck and set it as active.`,
   },{
